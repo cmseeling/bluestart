@@ -1,4 +1,5 @@
 import type { StorybookConfig } from '@storybook/sveltekit';
+import { defineConfig, mergeConfig } from 'vite';
 
 const config: StorybookConfig = {
 	stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|ts|svelte)'],
@@ -11,6 +12,18 @@ const config: StorybookConfig = {
 	framework: {
 		name: '@storybook/sveltekit',
 		options: {}
+	},
+	viteFinal: async (config) => {
+		return mergeConfig(
+			config,
+			defineConfig({
+				server: {
+					fs: {
+						allow: ['styled-system']
+					}
+				}
+			})
+		)
 	}
 };
 export default config;
