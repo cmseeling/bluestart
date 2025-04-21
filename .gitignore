@@ -20,6 +20,10 @@ coverage
 # svelte
 .svelte-kit
 
+# database
+**/*.db
+data
+
 # misc
 .DS_Store
 Thumbs.db

@@ -6,9 +6,9 @@ import { config as baseConfig } from './index.js';
 
 export const config = ts.config(
   ...baseConfig,
-  svelte.configs['flat/recommended'],
+  ...svelte.configs.recommended,
   prettier,
-  svelte.configs['flat/prettier'],
+  ...svelte.configs.prettier,
   {
     languageOptions: {
       globals: { ...globals.browser, ...globals.node }

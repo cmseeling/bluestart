@@ -4326,10 +4326,13 @@ var z = /*#__PURE__*/ Object.freeze({
     ZodError: ZodError
 });
 
-const TriggerSchema = z.object({
-    time: z.string().time(),
-    timeOffset: z.number(),
-    tempThreshold: z.number(),
+const DateRangeSchema = z.object({
+    start: z.date(),
+    end: z.date()
+});
+
+const StartClimateCommandSchema = z.object({
+    outdoorTemp: z.number(),
     tempAboveBelow: z.enum([
         'above',
         'below'
@@ -4337,7 +4340,21 @@ const TriggerSchema = z.object({
     tempUnits: z.enum([
         'F',
         'C'
-    ])
+    ]),
+    location: z.optional(z.object({
+        latitude: z.number(),
+        longitude: z.number()
+    })),
+    hvacTemp: z.number(),
+    defrost: z.boolean(),
+    heatedFeatures: z.boolean()
 });
 
-export { TriggerSchema };
+const ScheduledCommandSchema = StartClimateCommandSchema.extend({
+    activationTime: z.string().time()
+});
+const SchedledCommandWithIdSchema = ScheduledCommandSchema.partial().extend({
+    id: z.string()
+});
+
+export { DateRangeSchema, SchedledCommandWithIdSchema, ScheduledCommandSchema, StartClimateCommandSchema };

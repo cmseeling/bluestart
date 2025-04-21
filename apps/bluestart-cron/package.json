@@ -1,0 +1,19 @@
+{
+  "name": "bluestart-cron",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint src/",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@bluestart/eslint-config": "workspace:*",
+    "@types/node": "^22.14.0",
+    "bluelinky": "^8.4.0",
+    "dotenv": "^16.5.0",
+    "eslint": "^9.24.0",
+    "typescript": "^5.8.3"
+  }
+}
