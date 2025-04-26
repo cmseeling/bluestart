@@ -26,6 +26,7 @@ export const enum CommandType {
 
 export const commands = sqliteTable('commands', {
     id: text().primaryKey().$defaultFn(() => crypto.randomUUID()),
+    name: text().notNull(),
     day: text().notNull(),
     activationTime: text().notNull(),
   },
@@ -80,6 +81,20 @@ export const commandDelays = sqliteTable('commandDelays', {
   date: integer({ mode: 'timestamp' }).notNull(),
   delay: integer().notNull(),
 });
+
+export type Command = typeof commands.$inferSelect;
+export type Location = typeof locations.$inferSelect;
+export type CommandSetting = typeof commandSettings.$inferSelect;
+export type PauseDate = typeof pauseDates.$inferSelect;
+export type CommandDelay = typeof commandDelays.$inferSelect;
+export type CommandSettingWithLocation = CommandSetting & {
+  location?: Location | null;
+};
+export type CommandWithAllData = Command & {
+  settings: CommandSettingWithLocation;
+  pauseDates: PauseDate[];
+  delays: CommandDelay[];
+};
 
 export const commandSettingRelations = relations(commandSettings, ({ one }) => ({
   command: one(commands, {

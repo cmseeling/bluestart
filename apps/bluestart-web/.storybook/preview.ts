@@ -1,4 +1,6 @@
-import type { Preview } from '@storybook/svelte';
+import '../src/app.css';
+import type { Preview, SvelteRenderer } from '@storybook/svelte';
+import { withThemeByClassName } from '@storybook/addon-themes';
 
 const preview: Preview = {
 	parameters: {
@@ -8,7 +10,18 @@ const preview: Preview = {
 				date: /Date$/i
 			}
 		}
-	}
+	},
+	decorators: [
+		withThemeByClassName<SvelteRenderer>({
+			themes: {
+				mocha: 'mocha',
+				latte: 'latte',
+				frappe: 'frappe',
+				macchiato: 'macchiato'
+			},
+			defaultTheme: 'mocha'
+		})
+	]
 };
 
 export default preview;

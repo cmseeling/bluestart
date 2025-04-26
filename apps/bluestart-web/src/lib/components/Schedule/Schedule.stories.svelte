@@ -1,9 +1,14 @@
-<script>
-	import Schedule from '$lib/components/Schedule/Schedule.svelte';
-	import { CommandType } from '@bluestart/db/schema';
-    import { css } from 'styled-system/css';
+<script module>
+    import { defineMeta } from "@storybook/addon-svelte-csf";
+    import { fn } from '@storybook/test';
+    import Schedule from './Schedule.svelte';
+	import { CommandType } from "@bluestart/db/schema";
 
-    let days = new Map([
+    const { Story } = defineMeta({
+        title: 'Components/Schedule',
+        component: Schedule,
+        args: {
+            days: new Map([
                 ['Monday', [
                     {
                         id: '1',
@@ -88,10 +93,9 @@
                         delays: []
                     }
                 ]]
-            ]);
+            ])
+        }
+    });
 </script>
 
-<h1 class={css({ fontSize: 'lg', fontWeight: 'bold' })}>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
-
-<Schedule {days} />
+<Story name="Default" />
