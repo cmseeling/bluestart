@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { cellStyle } from '$lib/styleSnippets';
-	import type { CommandWithAllData } from '@bluestart/db/schema';
+	import { cellStyle } from '$lib/styles/cell';
+	import type { CommandWithAllData } from '@bluestart/db/schemaTypes';
     import { css } from 'styled-system/css';
 	import Button from '../base/button/Button.svelte';
 

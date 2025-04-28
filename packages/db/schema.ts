@@ -1,28 +1,26 @@
 import { relations } from 'drizzle-orm';
 import { sqliteTable, text, integer, index, real } from 'drizzle-orm/sqlite-core';
+import { CommandType, TemparatureUnits } from './enums';
 
-export const user = sqliteTable('user', {
+export const userTable = sqliteTable('user', {
   id: text('id').primaryKey(),
   username: text('username').notNull().unique(),
-  passwordHash: text('password_hash').notNull()
+  passwordHash: text('password_hash').notNull(),
+  forcePasswordChange: integer({ mode: 'boolean' }).notNull().default(false),
+  isMasterAccount: integer({ mode: 'boolean' }).notNull().default(false),
 });
 
-export const session = sqliteTable('session', {
+export const sessionTable = sqliteTable('session', {
   id: text('id').primaryKey(),
   userId: text('user_id')
     .notNull()
-    .references(() => user.id),
+    .references(() => userTable.id),
   expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull()
 });
 
-export type Session = typeof session.$inferSelect;
+// export type Session = typeof sessionTable.$inferSelect;
 
-export type User = typeof user.$inferSelect;
-
-export const enum CommandType {
-  Climate = 'climate',
-  Charging = 'charging'
-}
+// export type User = typeof userTable.$inferSelect;
 
 export const commands = sqliteTable('commands', {
     id: text().primaryKey().$defaultFn(() => crypto.randomUUID()),
@@ -59,7 +57,7 @@ export const commandSettings = sqliteTable('commandSettings', {
   }),
   tempAbove: integer(),
   tempBelow: integer(),
-  tempUnits: text({ enum: ['F', 'C'] }),
+  tempUnits: text({ enum: [TemparatureUnits.Fahrenheit, TemparatureUnits.Celsius] }),
   hvacTemp: integer(),
   defrost: integer({ mode: "boolean" }),
   heatedFeatures: integer({ mode: "boolean" }),
@@ -82,19 +80,19 @@ export const commandDelays = sqliteTable('commandDelays', {
   delay: integer().notNull(),
 });
 
-export type Command = typeof commands.$inferSelect;
-export type Location = typeof locations.$inferSelect;
-export type CommandSetting = typeof commandSettings.$inferSelect;
-export type PauseDate = typeof pauseDates.$inferSelect;
-export type CommandDelay = typeof commandDelays.$inferSelect;
-export type CommandSettingWithLocation = CommandSetting & {
-  location?: Location | null;
-};
-export type CommandWithAllData = Command & {
-  settings: CommandSettingWithLocation;
-  pauseDates: PauseDate[];
-  delays: CommandDelay[];
-};
+// export type Command = typeof commands.$inferSelect;
+// export type Location = typeof locations.$inferSelect;
+// export type CommandSetting = typeof commandSettings.$inferSelect;
+// export type PauseDate = typeof pauseDates.$inferSelect;
+// export type CommandDelay = typeof commandDelays.$inferSelect;
+// export type CommandSettingWithLocation = CommandSetting & {
+//   location?: Location | null;
+// };
+// export type CommandWithAllData = Command & {
+//   settings: CommandSettingWithLocation;
+//   pauseDates: PauseDate[];
+//   delays: CommandDelay[];
+// };
 
 export const commandSettingRelations = relations(commandSettings, ({ one }) => ({
   command: one(commands, {

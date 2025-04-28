@@ -19,7 +19,7 @@ const preview: Preview = {
 				frappe: 'frappe',
 				macchiato: 'macchiato'
 			},
-			defaultTheme: 'mocha'
+			defaultTheme: 'latte'
 		})
 	]
 };

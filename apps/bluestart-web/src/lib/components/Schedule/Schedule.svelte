@@ -1,8 +1,6 @@
 <script lang="ts">
-	import { cellStyle } from '$lib/styleSnippets';
-
-	// import type { DayCommands } from '$lib/models/day';
-	import type { CommandWithAllData } from '@bluestart/db/schema';
+	import { cellStyle } from '$lib/styles/cell';
+	import type { CommandWithAllData } from '@bluestart/db/schemaTypes';
     import { css } from 'styled-system/css';
 	import DayCommands from './DayCommands.svelte';
 
@@ -25,17 +23,6 @@
     ).sort();
     const activationTimes = [...new Set(allTimes)]; // Remove duplicates
     console.log(activationTimes);
-
-    // const columnSize = 100 / (days.length + 1);
-
-    // let options = $state({
-    //     view: 'timeGridWeek',
-    //     // view: 'dayGridMonth',
-    //     // view: 'resourceTimeGridWeek',
-    //     events: [
-    //         // your list of events
-    //     ]
-    // });
     
 </script>
 
