@@ -4,7 +4,7 @@
     import { css } from 'styled-system/css';
 	import DayCommands from './DayCommands.svelte';
 
-    interface Props {
+    type Props = {
         days: Map<string, CommandWithAllData[]>;
         // startHour: number;
         // endHour: number;

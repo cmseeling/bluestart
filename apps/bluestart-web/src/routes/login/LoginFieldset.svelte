@@ -1,16 +1,15 @@
 <script lang='ts'>
-	import { inputStyle } from '$lib/styles/input';
+	import Input from '$lib/components/base/input/Input.svelte';
     import { css } from 'styled-system/css';
-
 </script>
 
 <fieldset>
     <label>
         Username:
-        <input class={css(inputStyle)} type='text' name='username' />
+        <Input type='text' name='username' />
     </label>
     <label>
         Password:
-        <input class={css(inputStyle)} type='password' name='password' />
+        <Input type='password' name='password' />
     </label>
 </fieldset>

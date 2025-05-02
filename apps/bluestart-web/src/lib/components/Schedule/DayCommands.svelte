@@ -4,7 +4,7 @@
     import { css } from 'styled-system/css';
 	import Button from '../base/button/Button.svelte';
 
-    interface Props {
+    type Props = {
         name: string;
         commands: CommandWithAllData[];
         timeSlots: string[];
