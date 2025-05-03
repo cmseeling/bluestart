@@ -9,3 +9,7 @@
 </script>
 
 <Story name="Default" />
+
+<Story name="Error State">
+    <LoginFieldset errors={{ username: true, password: true }} />
+</Story>

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Input from '$lib/components/base/input/Input.svelte';
-	import { css, cva } from 'styled-system/css';
+	import InputContainer from '$lib/components/base/inputContainer/InputContainer.svelte';
+	import { css } from 'styled-system/css';
 
 	type Props = {
 		errors?: {
@@ -14,24 +15,8 @@
 	};
 
 	const { errors, formValues }: Props = $props();
-	console.log(errors);
 
 	let username = $state(formValues?.username);
-	
-	const fieldStyle = cva({
-		base: {
-			marginBottom: '4'
-		},
-		variants: {
-			error: {
-				true: { color: 'red.500' },
-				false: {}
-			}
-		},
-		defaultVariants: {
-			error: false
-		}
-	});
 </script>
 
 <fieldset
@@ -40,7 +25,7 @@
 		flexDirection: 'column'
 	})}
 >
-	<div class={fieldStyle({ error: errors?.username })}>
+	<InputContainer hasError={errors?.username}>
 		<label>
 			Username:
 			<Input
@@ -54,8 +39,8 @@
 		{#if errors?.username}
 			<span class={css({ color: 'red.500' })}>Username cannot be empty.</span>
 		{/if}
-	</div>
-	<div class={fieldStyle({ error: errors?.passwordGeneric || errors?.passwordStrength })}>
+	</InputContainer>
+	<InputContainer hasError={errors?.passwordGeneric || errors?.passwordStrength}>
 		<label>
 			Password:
 			<Input
@@ -71,8 +56,8 @@
         {#if errors?.passwordStrength}
 			<span class={css({ color: 'red.500' })}>Password must be greater than 8 characters.</span>
 		{/if}
-	</div>
-	<div class={fieldStyle({ error: errors?.passwordGeneric })}>
+	</InputContainer>
+	<InputContainer hasError={errors?.passwordGeneric}>
 		<label>
 			Re-type Password:
 			<Input
@@ -85,5 +70,5 @@
 		{#if errors?.passwordGeneric}
 			<span class={css({ color: 'red.500' })}>Passwords must match.</span>
 		{/if}
-	</div>
+	</InputContainer>
 </fieldset>

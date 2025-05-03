@@ -13,7 +13,7 @@ export const load: PageServerLoad = async () => {
 		where: eq(userTable.isMasterAccount, true)
 	});
 	if (masterAccount !== null && masterAccount !== undefined) {
-		return redirect(303, '/login');
+		return redirect(303, '/');
 	}
 };
 

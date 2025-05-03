@@ -8,7 +8,7 @@
 
 <h1
 	class={css({
-		fontSize: { base: '3xl', lg: '6xl' }
+		fontSize: { base: '3xl', md: '6xl' }
 	})}
 >
 	Welcome to Bluestart!
@@ -26,12 +26,12 @@
 {:else}
 	<div
 		class={css({
-			marginX: { base: '0', lg: '80' }
+			marginX: { base: '0', md: '80' }
 		})}
 	>
 		<p
 			class={css({
-				fontSize: { base: 'xl', lg: '2xl' },
+				fontSize: { base: 'xl', mdDown: '2xl' },
 				marginBottom: '4'
 			})}
 		>

@@ -26,9 +26,21 @@ export async function createUser(username: string, password: string): Promise<Us
 	return user;
 }
 
-export async function getUserPasswordHash(userId: string): Promise<string> {
+export async function getUserByName(userName: string): Promise<User> {
 	const user = await db.query.userTable.findFirst({
-		where: eq(userTable.id, userId)
+		where: eq(userTable.username, userName)
+	});
+
+	if(user === null || user === undefined) {
+		throw new Error("Invalid user name");
+	}
+
+	return user;
+}
+
+export async function getUserPasswordHash(userName: string): Promise<string> {
+	const user = await db.query.userTable.findFirst({
+		where: eq(userTable.username, userName)
 	});
 
 	if(user === null || user === undefined) {

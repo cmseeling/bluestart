@@ -1,15 +1,51 @@
-<script lang='ts'>
+<script lang="ts">
 	import Input from '$lib/components/base/input/Input.svelte';
-    import { css } from 'styled-system/css';
+	import InputContainer from '$lib/components/base/inputContainer/InputContainer.svelte';
+	import { css } from 'styled-system/css';
+
+	type Props = {
+		errors?: {
+			username: boolean;
+			password: boolean;
+		};
+		formValues?: {
+			username?: FormDataEntryValue | null;
+		};
+	};
+
+	const { errors, formValues }: Props = $props();
+
+	let username = $state(formValues?.username);
 </script>
 
 <fieldset>
-    <label>
-        Username:
-        <Input type='text' name='username' />
-    </label>
-    <label>
-        Password:
-        <Input type='password' name='password' />
-    </label>
+	<InputContainer hasError={errors?.username}>
+		<label>
+			Username:
+			<Input
+				type="text"
+				name="username"
+				required
+				hasError={errors?.username}
+				bind:value={username}
+			/>
+		</label>
+		{#if errors?.username}
+			<span class={css({ color: 'red.500' })}>Username cannot be empty.</span>
+		{/if}
+	</InputContainer>
+	<InputContainer hasError={errors?.password}>
+		<label>
+			Password:
+			<Input
+				type="password"
+				name="password"
+				required
+				hasError={errors?.password}
+			/>
+		</label>
+		{#if errors?.password}
+			<span class={css({ color: 'red.500' })}>Incorrect password.</span>
+		{/if}
+	</InputContainer>
 </fieldset>

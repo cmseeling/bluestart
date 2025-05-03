@@ -9,7 +9,7 @@
     minHeight: '100vh',
     marginX: {
         base: '1rem',
-        lg: '8rem'
+        md: '8rem'
     }
 })}>
     {@render children()}

@@ -11,5 +11,5 @@
 <Story name="Default" />
 
 <Story name="Error State">
-    <CreateMasterAccountFieldset />
+    <CreateMasterAccountFieldset errors={{ username: true, passwordGeneric: true, passwordStrength: true }} />
 </Story>
