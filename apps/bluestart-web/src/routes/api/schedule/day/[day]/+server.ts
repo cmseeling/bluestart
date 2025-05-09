@@ -2,6 +2,7 @@ import { error, json, type RequestHandler } from '@sveltejs/kit';
 // import { SchedledCommandWithIdSchema, ScheduledCommandSchema, TestCommand } from '@bluestart/data';
 import { db } from '@bluestart/db';
 import { commands } from '@bluestart/db/schema';
+import { getForecast } from '@bluestart/weather-api';
 
 import * as currEnv from '$env/static/private';
 

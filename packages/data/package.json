@@ -23,7 +23,7 @@
   },
   "scripts": {
     "build": "bunchee",
-    "dev": "bunchee --watch",
+    "bunchee-dev": "bunchee --watch",
     "lint": "eslint src/",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",

@@ -30,7 +30,7 @@
 		"drizzle-orm": "^0.41.0"
 	},
 	"devDependencies": {
-		"@bluestart/data": "workspace:*",
+		"@bluestart/weather-api": "workspace:*",
 		"@bluestart/eslint-config": "workspace:*",
 		"@chromatic-com/storybook": "^3",
 		"@eslint/compat": "^1.2.5",

@@ -1,0 +1,6 @@
+Header nav or sidebar nav
+    logout workflow
+admin page(s)
+    create user
+command form and api calls
+forecast widget

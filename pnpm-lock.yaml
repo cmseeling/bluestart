@@ -74,12 +74,12 @@ importers:
         specifier: ^0.41.0
         version: 0.41.0(@types/better-sqlite3@7.6.13)(better-sqlite3@11.9.1)
     devDependencies:
-      '@bluestart/data':
-        specifier: workspace:*
-        version: link:../../packages/data
       '@bluestart/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
+      '@bluestart/weather-api':
+        specifier: workspace:*
+        version: link:../../packages/weather-api
       '@chromatic-com/storybook':
         specifier: ^3
         version: 3.2.6(react@19.1.0)(storybook@8.6.12)
@@ -271,6 +271,24 @@ importers:
       '@bluestart/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@types/node':
+        specifier: ^22.14.0
+        version: 22.14.0
+      eslint:
+        specifier: ^9.24.0
+        version: 9.24.0
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+
+  packages/weather-api:
+    devDependencies:
+      '@bluestart/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@bluestart/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@types/node':
         specifier: ^22.14.0
         version: 22.14.0
@@ -3956,7 +3974,7 @@ packages:
       eslint-scope: 7.2.2
       eslint-utils: 3.0.0(eslint@8.4.1)
       eslint-visitor-keys: 3.4.3
-      espree: 9.2.0
+      espree: 9.6.1
       esquery: 1.6.0
       esutils: 2.0.3
       fast-deep-equal: 3.1.3
