@@ -20,8 +20,6 @@
         }
         return map;
     }, new Map<string, CommandWithAllData[]>());
-
-    const commandButtonStyle = css.raw({ flexGrow: '1', width: '100%' });
 </script>
 
 {#snippet commandList(commands: CommandWithAllData[])}
@@ -35,7 +33,7 @@
             <div class={css({ flexGrow: '1', })}>&nbsp;</div>
         {:else}
         {#each commands as command}
-            <Button additionalStyles={commandButtonStyle}>
+            <Button class={css({ flexGrow: '1', width: '100%' })}>
                 {command.name}
             </Button>
         {/each}
@@ -50,7 +48,7 @@
 })}>
     <div class={css(cellStyle, { display: 'flex' })}>
         <span class={css({ fontWeight: 'bold', flexGrow: '1' })}>{name}</span>
-        <Button variant='success' additionalStyles={css.raw({ width: '14' })}>
+        <Button variant='success' class={css({ width: '14' })}>
             +
         </Button>
     </div>

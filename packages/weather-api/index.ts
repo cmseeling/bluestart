@@ -1,7 +1,27 @@
 import { WttrResponse } from './wttr';
 
+export type WeatherConditions =
+  | 'Cloudy'
+  | 'Fog'
+  | 'HeavyRain'
+  | 'HeavyShowers'
+  | 'HeavySnow'
+  | 'HeavySnowShowers'
+  | 'LightRain'
+  | 'LightShowers'
+  | 'LightSleet'
+  | 'LightSleetShowers'
+  | 'LightSnow'
+  | 'LightSnowShowers'
+  | 'PartlyCloudy'
+  | 'Sunny'
+  | 'ThunderyHeavyRain'
+  | 'ThunderyShowers'
+  | 'ThunderySnowShowers'
+  | 'VeryCloudy';
+
 // from https://github.com/chubin/wttr.in/blob/master/lib/constants.py
-export const WWO_CODE: Map<number, WeatherConditions> = new Map([
+export const WWWOCodes: Map<number, WeatherConditions> = new Map([
     [113, 'Sunny'],
     [116, 'PartlyCloudy'],
     [119, 'Cloudy'],
@@ -51,55 +71,6 @@ export const WWO_CODE: Map<number, WeatherConditions> = new Map([
     [392, 'ThunderySnowShowers'],
     [395, 'HeavySnowShowers']
 ]);
-
-export type WeatherConditions =
-  | 'Cloudy'
-  | 'Fog'
-  | 'HeavyRain'
-  | 'HeavyShowers'
-  | 'HeavySnow'
-  | 'HeavySnowShowers'
-  | 'LightRain'
-  | 'LightShowers'
-  | 'LightSleet'
-  | 'LightSleetShowers'
-  | 'LightSnow'
-  | 'LightSnowShowers'
-  | 'PartlyCloudy'
-  | 'Sunny'
-  | 'ThunderyHeavyRain'
-  | 'ThunderyShowers'
-  | 'ThunderySnowShowers'
-  | 'VeryCloudy';
-
-export const WeatherConditionIcons: Map<WeatherConditions, string> = new Map([
-  ['Cloudy', 'wi-cloudy'],
-  ['Fog', 'wi-fog'],
-  ['HeavyRain', 'wi-rain'],
-  ['HeavyShowers', 'wi-showers'],
-  ['HeavySnow', 'wi-snow'],
-  ['HeavySnowShowers', 'wi-snow'],
-  ['LightRain', 'wi-rain'],
-  ['LightShowers', 'wi-showers'],
-  ['LightSleet', 'wi-sleet'],
-  ['LightSleetShowers', 'wi-sleet'],
-  ['LightSnow', 'wi-snow'],
-  ['LightSnowShowers', 'wi-snow'],
-  ['PartlyCloudy', 'wi-day-cloudy'],
-  ['Sunny', 'wi-day-sunny'],
-  ['ThunderyHeavyRain', 'wi-thunderstorm'],
-  ['ThunderyShowers', 'wi-thunderstorm'],
-  ['ThunderySnowShowers', 'wi-thunderstorm'],
-  ['VeryCloudy', 'wi-cloudy']
-]);
-
-export const getWeatherIconByWWOCode = (code: number): string => {
-  const condition = WWO_CODE.get(code);
-  if (condition) {
-    return WeatherConditionIcons.get(condition) || 'wi-day-sunny';
-  }
-  return 'wi-day-sunny';
-};
 
 const WTTRIN_URL = 'https://wttr.in/';
 

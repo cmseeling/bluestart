@@ -1,10 +1,9 @@
 <script lang="ts">
-    import { css, type Styles } from 'styled-system/css';
+    import { css } from 'styled-system/css';
     import { Button, type ButtonRootProps } from 'bits-ui';
 
     type Props = ButtonRootProps & {
         variant?: 'primary' | 'secondary' | 'success' | 'error';
-        additionalStyles?: Styles
     }
 
     const props: Props = $props();
@@ -25,6 +24,6 @@
     const buttonStyle = variantStyles[props.variant || 'primary'];
 </script>
 
-<Button.Root {...props} class={css(baseStyle, buttonStyle, props.additionalStyles)}>
+<Button.Root {...props} class={`${css(baseStyle, buttonStyle)} ${props.class}`}>
     {@render props.children?.()}
 </Button.Root>
