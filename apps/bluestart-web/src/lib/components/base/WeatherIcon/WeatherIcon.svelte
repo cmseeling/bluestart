@@ -33,7 +33,8 @@
 
 	const containerStyle = css.raw({
 		maxW: '12rem',
-		maxH: '12rem'
+		maxH: '12rem',
+		margin: '-1.5em'
 	});
 </script>
 
@@ -86,7 +87,7 @@
 		<SnowFill style="font-size: 7rem" />
         <SnowflakeFill
 			style="font-size: 3rem;"
-			class={css({ position: 'relative', bottom: '3rem', left: '4rem' })}
+			class={css({ position: 'relative', bottom: '3rem', left: '3rem' })}
 		/>
 	</div>
 {:else if heavySnowSet.includes(weatherCondition)}
