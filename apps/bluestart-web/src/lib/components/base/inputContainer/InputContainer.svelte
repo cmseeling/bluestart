@@ -2,7 +2,7 @@
     import { css, cva } from 'styled-system/css';
 	import type { Snippet } from 'svelte';
 
-    type Props = {
+    export type Props = {
         hasError?: boolean;
         children: Snippet<[]>;
     }

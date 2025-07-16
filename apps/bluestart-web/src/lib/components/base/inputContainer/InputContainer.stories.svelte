@@ -10,13 +10,9 @@
 </script>
 
 <Story name="Default">
-    <InputContainer>
-        <Input type="text" name="username"/>
-    </InputContainer>
+    <Input type="text" name="username"/>
 </Story>
 
 <Story name="Error State">
-    <InputContainer hasError={true}>
-        <Input type="text" name="username"/>
-    </InputContainer>
+    <Input type="text" name="username"/>
 </Story>

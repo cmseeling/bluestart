@@ -2,6 +2,7 @@
 	import Input from '$lib/components/base/input/Input.svelte';
 	import InputContainer from '$lib/components/base/inputContainer/InputContainer.svelte';
 	import { css } from 'styled-system/css';
+	import Dropdown from '../base/dropdown/Dropdown.svelte';
 
 	type Props = {
 		errors?: {
@@ -54,7 +55,7 @@
 	<InputContainer hasError={errors?.day}>
         <label>
             Day:
-            <select name="day" bind:value={day} required>
+            <Dropdown name="day" bind:value={day} required>
                 <option value="Sunday">Sunday</option>
                 <option value="Monday">Monday</option>
                 <option value="Tuesday">Tuesday</option>
@@ -62,7 +63,7 @@
                 <option value="Thursday">Thursday</option>
                 <option value="Friday">Friday</option>
                 <option value="Saturday">Saturday</option>
-            </select>
+            </Dropdown>
         </label>
         {#if errors?.day}
             <span class={css({ color: 'red.500' })}>Day cannot be empty.</span>
@@ -86,10 +87,10 @@
     <InputContainer>
         <label>
             Threshold Type:
-            <select name="thresholdType" bind:value={thresholdType} required>
+            <Dropdown name="thresholdType" bind:value={thresholdType} required>
                 <option value="above">Above</option>
                 <option value="below">Below</option>
-            </select>
+            </Dropdown>
         </label>
     </InputContainer>
     <InputContainer hasError={errors?.externalTemp}>
