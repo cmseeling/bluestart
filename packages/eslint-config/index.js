@@ -1,5 +1,5 @@
-import js from '@eslint/js';
 import { includeIgnoreFile } from '@eslint/compat';
+import js from '@eslint/js';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript-eslint';
 

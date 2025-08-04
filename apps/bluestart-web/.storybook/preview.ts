@@ -1,6 +1,6 @@
-import '../src/app.css';
-import type { Preview, SvelteRenderer } from '@storybook/svelte';
 import { withThemeByClassName } from '@storybook/addon-themes';
+import type { Preview, SvelteRenderer } from '@storybook/sveltekit';
+import '../src/app.css';
 
 const preview: Preview = {
 	parameters: {

@@ -1,4 +1,5 @@
 import prettier from 'eslint-config-prettier';
+import storybook from 'eslint-plugin-storybook';
 import svelte from 'eslint-plugin-svelte';
 import globals from 'globals';
 import ts from 'typescript-eslint';
@@ -14,5 +15,6 @@ export const config = ts.config(
       globals: { ...globals.browser, ...globals.node }
     },
     rules: { 'no-undef': 'off' }
-  }
+  },
+  storybook.configs['flat/recommended']
 );

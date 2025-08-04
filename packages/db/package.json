@@ -20,9 +20,9 @@
     "@bluestart/eslint-config": "workspace:*",
     "@bluestart/shared": "workspace:*",
     "@types/better-sqlite3": "^7.6.13",
-    "@types/node": "^22.14.0",
-    "drizzle-kit": "^0.30.6",
-    "eslint": "^9.24.0",
-    "typescript": "^5.8.3"
+    "@types/node": "^22",
+    "drizzle-kit": "^0.31.4",
+    "eslint": "^9.32.0",
+    "typescript": "^5.9.2"
   }
 }

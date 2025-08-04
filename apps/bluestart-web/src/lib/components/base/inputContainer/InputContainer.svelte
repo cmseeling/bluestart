@@ -1,15 +1,15 @@
-<script lang='ts'>
-    import { css, cva } from 'styled-system/css';
+<script lang="ts">
+	import { css, cva } from 'styled-system/css';
 	import type { Snippet } from 'svelte';
 
-    export type Props = {
-        hasError?: boolean;
-        children: Snippet<[]>;
-    }
+	export type Props = {
+		hasError?: boolean;
+		children: Snippet<[]>;
+	};
 
-    let { hasError, children }: Props = $props();
+	let { hasError, children }: Props = $props();
 
-    const fieldStyle = cva({
+	const fieldStyle = cva({
 		base: {
 			marginBottom: '4'
 		},
@@ -26,5 +26,5 @@
 </script>
 
 <div class={fieldStyle({ error: hasError })}>
-    {@render children()}
+	{@render children()}
 </div>
