@@ -20,6 +20,10 @@ coverage
 # svelte
 .svelte-kit
 
+## Panda
+styled-system
+styled-system-studio
+
 # database
 **/*.db
 data
