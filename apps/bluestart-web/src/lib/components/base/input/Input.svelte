@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { css, cva } from 'styled-system/css';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 	import { inputStyle } from '../input-style';
 
@@ -7,8 +6,7 @@
 		hasError?: boolean;
 	};
 	let { hasError, value = $bindable(), ...props }: Props = $props();
-
-	const style = cva(inputStyle);
+	console.log(hasError)
 </script>
 
-<input class={style({ error: hasError })} bind:value {...props} />
+<input bind:value {...props} class={inputStyle({ error: hasError })} />

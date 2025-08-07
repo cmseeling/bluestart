@@ -14,6 +14,7 @@
 	};
 
 	const { errors, formValues }: Props = $props();
+	console.log(errors)
 
 	let username = $state(formValues?.username);
 </script>
@@ -25,7 +26,9 @@
 			<Input
 				type="text"
 				name="username"
+				autocomplete="username"
 				required
+				placeholder="username"
 				hasError={errors?.username}
 				bind:value={username}
 			/>
@@ -37,7 +40,7 @@
 	<InputContainer hasError={errors?.password}>
 		<label>
 			Password:
-			<Input type="password" name="password" required hasError={errors?.password} />
+			<Input type="password" name="password" autocomplete="current-password" required hasError={errors?.password} />
 		</label>
 		{#if errors?.password}
 			<span class={css({ color: 'red.500' })}>Incorrect password.</span>

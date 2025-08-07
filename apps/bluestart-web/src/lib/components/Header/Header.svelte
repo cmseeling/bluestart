@@ -1,4 +1,4 @@
-<script type="ts">
+<script lang="ts">
 	import { css } from 'styled-system/css';
 	import Button from '../base/button/Button.svelte';
 </script>

@@ -8,8 +8,13 @@
 	});
 </script>
 
-<Story name="Default" />
+<Story name="Default">
+	<div>
+		<Input type="text" hasError={false} name="storybook-example" placeholder="placeholder" />
+	<input type="text" placeholder="test"/>
+	</div>
+</Story>
 
 <Story name="Error State">
-	<Input hasError={true} />
+	<Input type="text" hasError={true} name="storybook-example" />
 </Story>
