@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { css } from 'styled-system/css';
-	// import type { WeatherConditions } from '@bluestart/weather-api';
+	import type { WeatherConditions } from '@bluestart/weather-api';
 	import ClearDayFill from 'virtual:icons/meteocons/clear-day-fill';
 	import CloudyFill from 'virtual:icons/meteocons/cloudy-fill';
 	import PartlyCloudyFill from 'virtual:icons/meteocons/partly-cloudy-day-fill';
@@ -14,7 +14,7 @@
 	import SnowflakeFill from 'virtual:icons/meteocons/snowflake-fill';
 
 	type Props = {
-		weatherCondition: string;
+		weatherCondition: WeatherConditions;
 	};
 
 	let { weatherCondition }: Props = $props();

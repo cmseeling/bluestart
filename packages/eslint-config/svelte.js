@@ -1,4 +1,3 @@
-import prettier from 'eslint-config-prettier';
 import storybook from 'eslint-plugin-storybook';
 import svelte from 'eslint-plugin-svelte';
 import globals from 'globals';
@@ -8,7 +7,6 @@ import { config as baseConfig } from './index.js';
 export const config = ts.config(
   ...baseConfig,
   ...svelte.configs.recommended,
-  prettier,
   ...svelte.configs.prettier,
   {
     languageOptions: {

@@ -8,7 +8,8 @@
     "dev": "echo 'Add dev script here'",
     "build": "node ./build.mjs",
     "test": "echo 'Add test script here'",
-    "lint": "echo 'Add lint script here'"
+    "format": "prettier --write .",
+    "lint": "prettier --check . && eslint ."
   },
   "dependencies": {
     "@bluestart/database": "workspace:*",
@@ -17,9 +18,13 @@
     "dotenv": "^17.2.1"
   },
   "devDependencies": {
+    "@bluestart/eslint-config": "workspace:*",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^24.2.0",
     "esbuild": "^0.25.8",
-    "typescript": "^5.9.2"
+    "eslint": "^9.32.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.39.0"
   }
 }
