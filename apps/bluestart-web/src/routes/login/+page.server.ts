@@ -1,14 +1,14 @@
 import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { db, eq } from '@bluestart/database';
 import * as schema from '@bluestart/database/schema';
-import { eq } from 'drizzle-orm';
-import { db } from '$lib/server/db';
 import { verifyPasswordHash } from '$lib/server/password';
 import { getUserByName } from '$lib/server/user';
 import { generateSessionToken, createSession, setSessionTokenCookie } from '$lib/server/session';
 
 export const load: PageServerLoad = async () => {
 	console.log('handling login page request');
+	console.log(db.$client.name);
 	const masterAccount = await db.query.userTable.findFirst({
 		where: eq(schema.userTable.isMasterAccount, true)
 	});

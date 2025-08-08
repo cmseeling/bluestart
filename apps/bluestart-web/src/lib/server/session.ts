@@ -1,10 +1,9 @@
-import type { Session, User } from '@bluestart/database';
+import type { Session, User } from '@bluestart/database/types';
 import * as schema from '@bluestart/database/schema';
+import { db, eq } from '@bluestart/database';
 import { sha256 } from '@oslojs/crypto/sha2';
 import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
 import type { RequestEvent } from '@sveltejs/kit';
-import { eq } from 'drizzle-orm';
-import { db } from './db';
 
 export function generateSessionToken(): string {
 	const bytes = new Uint8Array(20);

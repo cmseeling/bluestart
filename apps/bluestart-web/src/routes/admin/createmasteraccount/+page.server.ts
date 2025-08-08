@@ -1,11 +1,10 @@
 import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { db } from '$lib/server/db';
-import { eq } from 'drizzle-orm';
 import { createUser } from '$lib/server/user';
 import { createSession, generateSessionToken, setSessionTokenCookie } from '$lib/server/session';
 import { verifyPasswordStrength } from '$lib/server/password';
 import { userTable } from '@bluestart/database/schema';
+import { db, eq } from '@bluestart/database'; 
 
 export const load: PageServerLoad = async () => {
 	console.log('handling createmasteraccount page request');

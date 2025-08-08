@@ -226,6 +226,9 @@ importers:
 
   packages/database:
     dependencies:
+      '@bluestart/shared':
+        specifier: workspace:*
+        version: link:../shared
       better-sqlite3:
         specifier: ^12.2.0
         version: 12.2.0
@@ -284,6 +287,19 @@ importers:
       typescript-eslint:
         specifier: ^8.38.0
         version: 8.38.0(eslint@9.32.0)(typescript@5.9.2)
+
+  packages/shared:
+    dependencies:
+      zod:
+        specifier: ^4.0.14
+        version: 4.0.14
+    devDependencies:
+      '@types/node':
+        specifier: ^22
+        version: 22.17.0
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
 
   packages/weather-api:
     devDependencies:
