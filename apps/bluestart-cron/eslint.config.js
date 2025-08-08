@@ -1,4 +1,6 @@
-import { config } from '@bluestart/eslint-config/lib';
+import { config as baseConfig } from '@bluestart/eslint-config';
+import ts from 'typescript-eslint';
 
-/** @type {import("eslint").Linter.Config} */
-export default config;
+export const config = ts.config(...baseConfig, {
+  ignores: ['**/dist/**']
+});

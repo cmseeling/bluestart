@@ -2,20 +2,17 @@
   "name": "@bluestart/shared",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
-  "main": "index.ts",
+  "scripts": {
+    "dev": "echo 'Add dev script here'",
+    "build": "echo 'Add build script here'",
+    "test": "echo 'Add test script here'",
+    "lint": "echo 'Add lint script here'"
+  },
   "dependencies": {
-    "zod": "^3.24.2"
+    "zod": "^4.0.15"
   },
   "devDependencies": {
-    "@bluestart/eslint-config": "workspace:*",
-    "@types/node": "^22.14.0",
-    "eslint": "^9.24.0",
-    "typescript": "^5.8.3"
-  },
-  "scripts": {
-    "typecheck": "tsc --noEmit",
-    "format": "prettier --write .",
-    "lint": "eslint ."
+    "@types/node": "^24.2.0",
+    "typescript": "^5.9.2"
   }
 }

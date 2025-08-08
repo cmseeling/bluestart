@@ -1,0 +1,23 @@
+{
+  "name": "@bluestart/database",
+  "version": "0.0.1",
+  "private": true,
+  "main": "index.ts",
+  "type": "module",
+  "scripts": {
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:studio": "drizzle-kit studio"
+  },
+  "dependencies": {
+    "@bluestart/shared": "workspace:*",
+    "better-sqlite3": "^12.2.0",
+    "dotenv": "^17.2.1",
+    "drizzle-orm": "^0.44.4"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.4",
+    "typescript": "^5.9.2"
+  }
+}

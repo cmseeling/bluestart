@@ -1,8 +1,8 @@
 import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { db } from '@bluestart/db';
-import { eq } from 'drizzle-orm';
-import { userTable } from '@bluestart/db/schema';
+import { db } from '$lib/server/db';
+import { eq } from '@bluestart/database';
+import { userTable } from '@bluestart/database/schema';
 import { createUser } from '$lib/server/user';
 import { createSession, generateSessionToken, setSessionTokenCookie } from '$lib/server/session';
 import { verifyPasswordStrength } from '$lib/server/password';
@@ -19,14 +19,14 @@ export const load: PageServerLoad = async () => {
 
 export const actions = {
 	default: async (event: RequestEvent) => {
-        const masterAccount = await db.query.userTable.findFirst({
-            where: eq(userTable.isMasterAccount, true)
-        });
-        if (masterAccount !== null && masterAccount !== undefined) {
-            return fail(422);
-        }
+		const masterAccount = await db.query.userTable.findFirst({
+			where: eq(userTable.isMasterAccount, true)
+		});
+		if (masterAccount !== null && masterAccount !== undefined) {
+			return fail(422);
+		}
 
-        const { request } = event;
+		const { request } = event;
 		const formData = await request.formData();
 		console.log(formData);
 
@@ -34,15 +34,15 @@ export const actions = {
 		const errors = {
 			username: false,
 			passwordGeneric: false,
-            passwordStrength: false
+			passwordStrength: false
 		};
-        
-        const username = formData.get('username');
-        const password = formData.get('password');
-        const confirmPassword = formData.get('confirmPassword');
-        
+
+		const username = formData.get('username');
+		const password = formData.get('password');
+		const confirmPassword = formData.get('confirmPassword');
+
 		if (
-            typeof username !== 'string' ||
+			typeof username !== 'string' ||
 			username === null ||
 			username === undefined ||
 			username === ''
@@ -51,7 +51,7 @@ export const actions = {
 			errors.username = true;
 		}
 		if (
-            typeof password !== 'string' ||
+			typeof password !== 'string' ||
 			password === null ||
 			password === undefined ||
 			password === ''
@@ -64,23 +64,23 @@ export const actions = {
 			errors.passwordGeneric = true;
 		}
 
-        if(!verifyPasswordStrength(password as string)) {
-            hasErrors = true;
-            errors.passwordStrength = true;
-        }
+		if (!verifyPasswordStrength(password as string)) {
+			hasErrors = true;
+			errors.passwordStrength = true;
+		}
 
 		if (hasErrors) {
 			return fail(400, {
 				errors,
-                formValues: { username }
+				formValues: { username }
 			});
 		}
 
-        const user = await createUser(username as string, password as string);
-        const sessionToken = generateSessionToken();
-        const session = await createSession(sessionToken, user.id);
-        setSessionTokenCookie(event, sessionToken, session.expiresAt);
+		const user = await createUser(username as string, password as string);
+		const sessionToken = generateSessionToken();
+		const session = await createSession(sessionToken, user.id);
+		setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
-        return { success: true };
+		return { success: true };
 	}
 };

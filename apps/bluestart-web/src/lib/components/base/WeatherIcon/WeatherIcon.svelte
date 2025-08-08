@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { css } from 'styled-system/css';
 	import type { WeatherConditions } from '@bluestart/weather-api';
+	import { css } from 'styled-system/css';
+	import Fog from 'virtual:icons/game-icons/fog';
 	import ClearDayFill from 'virtual:icons/meteocons/clear-day-fill';
 	import CloudyFill from 'virtual:icons/meteocons/cloudy-fill';
 	import PartlyCloudyFill from 'virtual:icons/meteocons/partly-cloudy-day-fill';
-	import Fog from 'virtual:icons/game-icons/fog';
 	import RainFill from 'virtual:icons/meteocons/rain-fill';
+	import RaindropFill from 'virtual:icons/meteocons/raindrop-fill';
 	import SleetFill from 'virtual:icons/meteocons/sleet-fill';
 	import SnowFill from 'virtual:icons/meteocons/snow-fill';
+	import SnowflakeFill from 'virtual:icons/meteocons/snowflake-fill';
 	import ThunderstormFill from 'virtual:icons/meteocons/thunderstorms-fill';
 	import ThunderstormSnowFill from 'virtual:icons/meteocons/thunderstorms-snow-fill';
-	import RaindropFill from 'virtual:icons/meteocons/raindrop-fill';
-	import SnowflakeFill from 'virtual:icons/meteocons/snowflake-fill';
 
 	type Props = {
 		weatherCondition: WeatherConditions;
@@ -65,7 +65,7 @@
 			style="font-size: 3rem;"
 			class={css({ position: 'relative', bottom: '3rem', left: '3rem' })}
 		/>
-        <RaindropFill
+		<RaindropFill
 			style="font-size: 3rem;"
 			class={css({ position: 'relative', bottom: '6rem', left: '2rem' })}
 		/>
@@ -73,11 +73,11 @@
 {:else if sleetSet.includes(weatherCondition)}
 	<div class={css(containerStyle)}>
 		<SleetFill style="font-size: 7rem" />
-        <RaindropFill
+		<RaindropFill
 			style="font-size: 3rem;"
 			class={css({ position: 'relative', bottom: '3rem', left: '4rem' })}
 		/>
-        <SnowflakeFill
+		<SnowflakeFill
 			style="font-size: 3rem;"
 			class={css({ position: 'relative', bottom: '6rem', left: '2rem' })}
 		/>
@@ -85,7 +85,7 @@
 {:else if lightSnowSet.includes(weatherCondition)}
 	<div class={css(containerStyle)}>
 		<SnowFill style="font-size: 7rem" />
-        <SnowflakeFill
+		<SnowflakeFill
 			style="font-size: 3rem;"
 			class={css({ position: 'relative', bottom: '3rem', left: '3rem' })}
 		/>
@@ -93,11 +93,11 @@
 {:else if heavySnowSet.includes(weatherCondition)}
 	<div class={css(containerStyle)}>
 		<SnowFill style="font-size: 7rem" />
-        <SnowflakeFill
+		<SnowflakeFill
 			style="font-size: 3rem;"
 			class={css({ position: 'relative', bottom: '3rem', left: '4rem' })}
 		/>
-        <SnowflakeFill
+		<SnowflakeFill
 			style="font-size: 3rem;"
 			class={css({ position: 'relative', bottom: '6rem', left: '2rem' })}
 		/>
@@ -109,7 +109,7 @@
 {:else if thunderstormSnowSet.includes(weatherCondition)}
 	<div class={css(containerStyle)}>
 		<ThunderstormSnowFill style="font-size: 7rem" />
-        <SnowflakeFill
+		<SnowflakeFill
 			style="font-size: 3rem;"
 			class={css({ position: 'relative', bottom: '3rem', left: '4rem' })}
 		/>

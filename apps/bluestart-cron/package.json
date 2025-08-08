@@ -1,19 +1,30 @@
 {
   "name": "bluestart-cron",
-  "private": true,
   "version": "0.0.1",
+  "private": true,
   "type": "module",
+  "main": "dist/index.js",
   "scripts": {
-    "lint": "eslint src/",
+    "dev": "echo 'Add dev script here'",
+    "build": "node ./build.mjs",
+    "test": "echo 'Add test script here'",
     "format": "prettier --write .",
-    "typecheck": "tsc --noEmit"
+    "lint": "prettier --check . && eslint ."
   },
   "dependencies": {
+    "@bluestart/database": "workspace:*",
+    "@bluestart/shared": "workspace:*",
+    "better-sqlite3": "^12.2.0",
+    "dotenv": "^17.2.1"
+  },
+  "devDependencies": {
     "@bluestart/eslint-config": "workspace:*",
-    "@types/node": "^22.14.0",
-    "bluelinky": "^8.4.0",
-    "dotenv": "^16.5.0",
-    "eslint": "^9.24.0",
-    "typescript": "^5.8.3"
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^24.2.0",
+    "esbuild": "^0.25.8",
+    "eslint": "^9.32.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.39.0"
   }
 }

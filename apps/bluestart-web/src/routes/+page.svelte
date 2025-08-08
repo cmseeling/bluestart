@@ -1,6 +1,6 @@
 <script>
 	import Schedule from '$lib/components/Schedule/Schedule.svelte';
-	import { CommandType } from '@bluestart/db/enums';
+	import { CommandType } from '@bluestart/database/enums';
 	import { css } from 'styled-system/css';
 
 	let days = new Map([

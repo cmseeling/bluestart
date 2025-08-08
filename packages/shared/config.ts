@@ -1,15 +1,15 @@
 import { z } from 'zod';
 
 const environment = z.object({
-  DATABASE_PATH: z.string().default('')
+  DATABASE_URL: z.string().default('')
 });
 
-const serverConfigSchema = environment.transform((env) => {
+export const dotenvConfigSchema = environment.transform((env) => {
   return {
-    databasePath: env.DATABASE_PATH
+    databaseUrl: env.DATABASE_URL
   };
 });
 
-const serverConfig = serverConfigSchema.parse(process.env);
+const dotenvConfig = dotenvConfigSchema.parse(process.env);
 
-export default serverConfig;
+export default dotenvConfig;

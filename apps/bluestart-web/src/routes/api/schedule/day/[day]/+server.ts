@@ -1,7 +1,7 @@
 import { error, json, type RequestHandler } from '@sveltejs/kit';
 // import { SchedledCommandWithIdSchema, ScheduledCommandSchema, TestCommand } from '@bluestart/data';
-import { db } from '@bluestart/db';
-import { commands } from '@bluestart/db/schema';
+import { db } from '$lib/server/db';
+import { commands } from '@bluestart/database/schema';
 import { getForecast } from '@bluestart/weather-api';
 
 import * as currEnv from '$env/static/private';
@@ -17,7 +17,7 @@ export const GET: RequestHandler = async (event) => {
 				}
 			},
 			pauseDates: true,
-			delays: true,
+			delays: true
 		}
 	});
 

@@ -1,10 +1,10 @@
-import { eq } from "drizzle-orm";
-import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from "@oslojs/encoding";
-import { sha256 } from "@oslojs/crypto/sha2";
-import { db } from "@bluestart/db";
-import { sessionTable, userTable } from "@bluestart/db/schema";
-import type { Session, User } from "@bluestart/db/schemaTypes";
-import type { RequestEvent } from "@sveltejs/kit";
+import { eq } from '@bluestart/database';
+import * as schema from '@bluestart/database/schema';
+import type { Session, User } from '@bluestart/database/types';
+import { sha256 } from '@oslojs/crypto/sha2';
+import { encodeBase32LowerCaseNoPadding, encodeHexLowerCase } from '@oslojs/encoding';
+import type { RequestEvent } from '@sveltejs/kit';
+import { db } from './db';
 
 export function generateSessionToken(): string {
 	const bytes = new Uint8Array(20);
@@ -20,49 +20,48 @@ export async function createSession(token: string, userId: string): Promise<Sess
 		userId,
 		expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30)
 	};
-	await db.insert(sessionTable).values(session);
+	await db.insert(schema.sessionTable).values(session);
 	return session;
 }
 
 export async function validateSessionToken(token: string): Promise<SessionValidationResult> {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 	const result = await db
-		.select({ user: userTable, session: sessionTable })
-		.from(sessionTable)
-		.innerJoin(userTable, eq(sessionTable.userId, userTable.id))
-		.where(eq(sessionTable.id, sessionId));
+		.select({ user: schema.userTable, session: schema.sessionTable })
+		.from(schema.sessionTable)
+		.innerJoin(schema.userTable, eq(schema.sessionTable.userId, schema.userTable.id))
+		.where(eq(schema.sessionTable.id, sessionId));
 	if (result.length < 1) {
 		return { session: null, user: null };
 	}
 	const { user, session } = result[0];
 	if (Date.now() >= session.expiresAt.getTime()) {
-		await db.delete(sessionTable).where(eq(sessionTable.id, session.id));
+		await db.delete(schema.sessionTable).where(eq(schema.sessionTable.id, session.id));
 		return { session: null, user: null };
 	}
 	if (Date.now() >= session.expiresAt.getTime() - 1000 * 60 * 60 * 24 * 15) {
 		session.expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 30);
 		await db
-			.update(sessionTable)
+			.update(schema.sessionTable)
 			.set({
 				expiresAt: session.expiresAt
 			})
-			.where(eq(sessionTable.id, session.id));
+			.where(eq(schema.sessionTable.id, session.id));
 	}
 	return { session, user };
 }
 
 export async function invalidateSession(sessionId: string): Promise<void> {
-	await db.delete(sessionTable).where(eq(sessionTable.id, sessionId));
+	await db.delete(schema.sessionTable).where(eq(schema.sessionTable.id, sessionId));
 }
 
 export async function invalidateAllSessions(userId: string): Promise<void> {
-	await db.delete(sessionTable).where(eq(sessionTable.userId, userId));
+	await db.delete(schema.sessionTable).where(eq(schema.sessionTable.userId, userId));
 }
 
 export type SessionValidationResult =
 	| { session: Session; user: User }
 	| { session: null; user: null };
-
 
 export function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date): void {
 	event.cookies.set('session', token, {

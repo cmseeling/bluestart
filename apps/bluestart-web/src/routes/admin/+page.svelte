@@ -1,6 +1,4 @@
-<script lang='ts'>
+<script lang="ts">
 </script>
 
-<div>
-    Admin Page
-</div>
+<div>Admin Page</div>

@@ -25,7 +25,9 @@
 			<Input
 				type="text"
 				name="username"
+				autocomplete="username"
 				required
+				placeholder="username"
 				hasError={errors?.username}
 				bind:value={username}
 			/>
@@ -40,6 +42,7 @@
 			<Input
 				type="password"
 				name="password"
+				autocomplete="current-password"
 				required
 				hasError={errors?.password}
 			/>

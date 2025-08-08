@@ -1,16 +1,16 @@
 import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { db } from '@bluestart/db';
-import { eq } from 'drizzle-orm';
-import { userTable } from '@bluestart/db/schema';
+import { eq } from '@bluestart/database';
+import * as schema from '@bluestart/database/schema';
 import { verifyPasswordHash } from '$lib/server/password';
 import { getUserByName } from '$lib/server/user';
 import { generateSessionToken, createSession, setSessionTokenCookie } from '$lib/server/session';
+import { db } from '$lib/server/db';
 
 export const load: PageServerLoad = async () => {
 	console.log('handling login page request');
 	const masterAccount = await db.query.userTable.findFirst({
-		where: eq(userTable.isMasterAccount, true)
+		where: eq(schema.userTable.isMasterAccount, true)
 	});
 	if (masterAccount === null || masterAccount === undefined) {
 		return redirect(303, '/admin/createmasteraccount');
@@ -50,24 +50,24 @@ export const actions = {
 			errors.password = true;
 		}
 
-        const user = await getUserByName(username as string);
-	    const validPassword = await verifyPasswordHash(user.passwordHash, password as string);
-        if (!validPassword) {
-            hasErrors = true;
-            errors.password = true;
-        }
+		const user = await getUserByName(username as string);
+		const validPassword = await verifyPasswordHash(user.passwordHash, password as string);
+		if (!validPassword) {
+			hasErrors = true;
+			errors.password = true;
+		}
 
-        if (hasErrors) {
+		if (hasErrors) {
 			return fail(400, {
 				errors,
 				formValues: { username }
 			});
 		}
 
-        const sessionToken = generateSessionToken();
-        const session = await createSession(sessionToken, user.id);
-        setSessionTokenCookie(event, sessionToken, session.expiresAt);
+		const sessionToken = generateSessionToken();
+		const session = await createSession(sessionToken, user.id);
+		setSessionTokenCookie(event, sessionToken, session.expiresAt);
 
-        return redirect(302, '/');
+		return redirect(302, '/');
 	}
 };
