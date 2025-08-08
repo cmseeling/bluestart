@@ -13,6 +13,7 @@ test-results
 .wrangler
 build
 *storybook.log
+dist
 
 # testing
 coverage

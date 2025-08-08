@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { cellStyle } from '$lib/styles/cell';
-	import type { CommandWithAllData } from '@bluestart/data/db/schemaTypes';
+	import type { CommandWithAllData } from '@bluestart/database/types';
 	import { css } from 'styled-system/css';
 	import DayCommands from './DayCommands.svelte';
 

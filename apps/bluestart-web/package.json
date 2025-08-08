@@ -23,7 +23,7 @@
 		"build-storybook": "storybook build"
 	},
 	"dependencies": {
-		"@bluestart/data": "workspace:*",
+		"@bluestart/database": "workspace:*",
 		"@node-rs/argon2": "^2.0.2",
 		"@oslojs/binary": "^1.0.0",
 		"@oslojs/crypto": "^1.0.1",
@@ -74,11 +74,5 @@
 		"vite-plugin-devtools-json": "^0.4.1",
 		"vitest": "^3.2.4",
 		"vitest-browser-svelte": "^1.0.0"
-	},
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"esbuild",
-			"better-sqlite3"
-		]
 	}
 }

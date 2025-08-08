@@ -5,7 +5,7 @@ import { eq } from 'drizzle-orm';
 import { createUser } from '$lib/server/user';
 import { createSession, generateSessionToken, setSessionTokenCookie } from '$lib/server/session';
 import { verifyPasswordStrength } from '$lib/server/password';
-import { userTable } from '$lib/server/db/schema';
+import { userTable } from '@bluestart/database/schema';
 
 export const load: PageServerLoad = async () => {
 	console.log('handling createmasteraccount page request');

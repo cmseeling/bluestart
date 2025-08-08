@@ -1,6 +1,6 @@
 import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { schema } from '@bluestart/data';
+import * as schema from '@bluestart/database/schema';
 import { eq } from 'drizzle-orm';
 import { db } from '$lib/server/db';
 import { verifyPasswordHash } from '$lib/server/password';

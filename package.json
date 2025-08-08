@@ -6,9 +6,8 @@
     "lint": "turbo run lint",
     "format": "prettier --write .",
     "typecheck": "turbo run typecheck",
-    "db:push": "pnpm --filter @bluestart/db run db:push",
-    "db:migrate": "pnpm --filter @bluestart/db run db:migrate",
-    "db:studio": "pnpm --filter @bluestart/db run db:studio"
+    "db:push": "pnpm --filter @bluestart/database run db:push",
+    "db:studio": "pnpm --filter @bluestart/database run db:studio"
   },
   "devDependencies": {
     "prettier": "^3.6.2",

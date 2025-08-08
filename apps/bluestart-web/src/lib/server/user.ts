@@ -1,5 +1,5 @@
-import type { User } from '@bluestart/data';
-import { schema } from '@bluestart/data';
+import type { User } from '@bluestart/database';
+import * as schema from '@bluestart/database/schema';
 import { eq } from 'drizzle-orm';
 import { hashPassword } from './password';
 import { db } from './db';
