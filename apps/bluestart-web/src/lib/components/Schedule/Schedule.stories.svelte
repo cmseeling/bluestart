@@ -1,7 +1,7 @@
 <script module>
+	import { CommandType } from '@bluestart/database/enums';
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import Schedule from './Schedule.svelte';
-	import { CommandType } from '@bluestart/database/enums';
 
 	const { Story } = defineMeta({
 		title: 'Components/Schedule',

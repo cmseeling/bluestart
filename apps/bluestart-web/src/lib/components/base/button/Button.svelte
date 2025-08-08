@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { css } from 'styled-system/css';
 	import { Button, type ButtonRootProps } from 'bits-ui';
+	import { css } from 'styled-system/css';
 
 	type Props = ButtonRootProps & {
 		variant?: 'primary' | 'secondary' | 'success' | 'error';

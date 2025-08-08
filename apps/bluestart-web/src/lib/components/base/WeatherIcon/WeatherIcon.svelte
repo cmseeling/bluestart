@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { css } from 'styled-system/css';
 	import type { WeatherConditions } from '@bluestart/weather-api';
+	import { css } from 'styled-system/css';
+	import Fog from 'virtual:icons/game-icons/fog';
 	import ClearDayFill from 'virtual:icons/meteocons/clear-day-fill';
 	import CloudyFill from 'virtual:icons/meteocons/cloudy-fill';
 	import PartlyCloudyFill from 'virtual:icons/meteocons/partly-cloudy-day-fill';
-	import Fog from 'virtual:icons/game-icons/fog';
 	import RainFill from 'virtual:icons/meteocons/rain-fill';
+	import RaindropFill from 'virtual:icons/meteocons/raindrop-fill';
 	import SleetFill from 'virtual:icons/meteocons/sleet-fill';
 	import SnowFill from 'virtual:icons/meteocons/snow-fill';
+	import SnowflakeFill from 'virtual:icons/meteocons/snowflake-fill';
 	import ThunderstormFill from 'virtual:icons/meteocons/thunderstorms-fill';
 	import ThunderstormSnowFill from 'virtual:icons/meteocons/thunderstorms-snow-fill';
-	import RaindropFill from 'virtual:icons/meteocons/raindrop-fill';
-	import SnowflakeFill from 'virtual:icons/meteocons/snowflake-fill';
 
 	type Props = {
 		weatherCondition: WeatherConditions;

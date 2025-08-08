@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { css } from 'styled-system/css';
 	import WeatherIcon from '$lib/components/base/WeatherIcon/WeatherIcon.svelte';
-	// import type { CurrentCondition } from '@bluestart/weather-api/wttr';
 	import { TemparatureUnits } from '@bluestart/database/enums';
-	// import { WWWOCodes } from '@bluestart/weather-api';
+	import { WWWOCodes } from '@bluestart/weather-api';
+	import type { CurrentCondition } from '@bluestart/weather-api/wttr';
+	import { css } from 'styled-system/css';
 
 	type Props = {
 		currentConditions: CurrentCondition;

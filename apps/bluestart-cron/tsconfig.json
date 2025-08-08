@@ -6,8 +6,9 @@
     "moduleResolution": "node",
     "module": "esnext",
     "target": "esnext",
-    "lib": ["ESNext"]
+    "lib": ["ESNext"],
+    "outDir": "./dist"
   },
   "include": ["."],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "build.mjs"]
 }

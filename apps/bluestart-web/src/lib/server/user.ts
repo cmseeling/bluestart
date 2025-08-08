@@ -1,8 +1,8 @@
 import { eq } from '@bluestart/database';
-import type { User } from '@bluestart/database/types';
 import * as schema from '@bluestart/database/schema';
-import { hashPassword } from './password';
+import type { User } from '@bluestart/database/types';
 import { db } from './db';
+import { hashPassword } from './password';
 
 export function verifyUsernameInput(username: string): boolean {
 	return username.length > 3 && username.length < 32 && username.trim() === username;

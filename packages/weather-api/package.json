@@ -8,8 +8,7 @@
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@bluestart/eslint-config": "workspace:*",
     "@types/node": "^22",

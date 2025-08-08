@@ -1,7 +1,7 @@
-import Database from 'better-sqlite3';
 import { drizzle, eq, schema } from '@bluestart/database';
 import type { User } from '@bluestart/database/types';
 import { dotenvConfigSchema } from '@bluestart/shared/config';
+import Database from 'better-sqlite3';
 import * as dotenv from 'dotenv';
 
 async function main() {

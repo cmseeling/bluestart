@@ -1,8 +1,8 @@
 import { includeIgnoreFile } from '@eslint/compat';
 import js from '@eslint/js';
+import prettier from 'eslint-config-prettier';
 import { fileURLToPath } from 'node:url';
 import ts from 'typescript-eslint';
-import prettier from 'eslint-config-prettier';
 
 const gitignorePath = fileURLToPath(new URL('../../.gitignore', import.meta.url));
 

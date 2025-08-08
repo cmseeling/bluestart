@@ -1,7 +1,7 @@
 import {
-	validateSessionToken,
+	deleteSessionTokenCookie,
 	setSessionTokenCookie,
-	deleteSessionTokenCookie
+	validateSessionToken
 } from '$lib/server/session';
 
 import { redirect, type Handle } from '@sveltejs/kit';

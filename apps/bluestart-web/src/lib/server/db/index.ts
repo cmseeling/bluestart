@@ -1,6 +1,6 @@
-import Database from 'better-sqlite3';
-import { drizzle, schema } from '@bluestart/database';
 import { env } from '$env/dynamic/private';
+import { drizzle, schema } from '@bluestart/database';
+import Database from 'better-sqlite3';
 
 if (!env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
 

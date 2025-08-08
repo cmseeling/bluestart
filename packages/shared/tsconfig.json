@@ -1,5 +1,5 @@
 {
-    "compilerOptions": {},
-    "include": ["."],
-    "exclude": ["node_modules", "dist"]
+  "compilerOptions": {},
+  "include": ["."],
+  "exclude": ["node_modules", "dist"]
 }

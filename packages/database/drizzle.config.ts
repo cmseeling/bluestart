@@ -1,6 +1,6 @@
-import "dotenv/config";
+import dotenvConfig from '@bluestart/shared/config';
+import 'dotenv/config';
 import type { Config } from 'drizzle-kit';
-import dotenvConfig from "@bluestart/shared/config";
 
 export default {
   schema: './schema.ts',

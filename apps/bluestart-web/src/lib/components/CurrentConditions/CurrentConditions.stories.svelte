@@ -1,7 +1,7 @@
 <script module>
+	import { TemparatureUnits } from '@bluestart/database/enums';
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import CurrentConditions from './CurrentConditions.svelte';
-	import { TemparatureUnits } from '@bluestart/database/enums';
 
 	const currentConditions = {
 		FeelsLikeC: '16',

@@ -4,6 +4,6 @@ export const enum CommandType {
 }
 
 export const enum TemparatureUnits {
-    Fahrenheit = 'F',
-    Celsius = 'C'
-};
+  Fahrenheit = 'F',
+  Celsius = 'C'
+}

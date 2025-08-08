@@ -1,7 +1,7 @@
 <script module>
 	import { defineMeta } from '@storybook/addon-svelte-csf';
-	import InputContainer from './InputContainer.svelte';
 	import Input from '../input/Input.svelte';
+	import InputContainer from './InputContainer.svelte';
 
 	const { Story } = defineMeta({
 		title: 'Components/Base/InputContainer',
