@@ -17,7 +17,7 @@ export const GET: RequestHandler = async (event) => {
 				}
 			},
 			pauseDates: true,
-			delays: true,
+			delays: true
 		}
 	});
 

@@ -35,7 +35,7 @@
 		{#if commands.length === 0}
 			<div class={css({ flexGrow: '1' })}>&nbsp;</div>
 		{:else}
-			{#each commands as command (command.id)}
+			{#each commands as command, index (index)}
 				<Button class={css({ flexGrow: '1', width: '100%' })}>
 					{command.name}
 				</Button>
@@ -56,7 +56,7 @@
 		<span class={css({ fontWeight: 'bold', flexGrow: '1' })}>{name}</span>
 		<Button variant="success" class={css({ width: '14' })}>+</Button>
 	</div>
-	{#each timeSlots as timeSlot (timeSlot)}
+	{#each timeSlots as timeSlot, index (index)}
 		<div class={css(cellStyle)}>
 			{@render commandList(commandsByTime.get(timeSlot) || [])}
 		</div>

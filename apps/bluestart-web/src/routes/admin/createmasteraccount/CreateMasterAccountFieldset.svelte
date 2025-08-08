@@ -7,7 +7,7 @@
 		errors?: {
 			username: boolean;
 			passwordGeneric: boolean;
-            passwordStrength: boolean;
+			passwordStrength: boolean;
 		};
 		formValues?: {
 			username?: FormDataEntryValue | null;
@@ -53,19 +53,14 @@
 		{#if errors?.passwordGeneric}
 			<span class={css({ color: 'red.500' })}>Password cannot be empty.</span>
 		{/if}
-        {#if errors?.passwordStrength}
+		{#if errors?.passwordStrength}
 			<span class={css({ color: 'red.500' })}>Password must be greater than 8 characters.</span>
 		{/if}
 	</InputContainer>
 	<InputContainer hasError={errors?.passwordGeneric}>
 		<label>
 			Re-type Password:
-			<Input
-				type="password"
-				name="confirmPassword"
-				required
-				hasError={errors?.passwordGeneric}
-			/>
+			<Input type="password" name="confirmPassword" required hasError={errors?.passwordGeneric} />
 		</label>
 		{#if errors?.passwordGeneric}
 			<span class={css({ color: 'red.500' })}>Passwords must match.</span>

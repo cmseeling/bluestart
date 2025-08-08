@@ -14,7 +14,6 @@
 	};
 
 	const { errors, formValues }: Props = $props();
-	console.log(errors);
 
 	let username = $state(formValues?.username);
 </script>

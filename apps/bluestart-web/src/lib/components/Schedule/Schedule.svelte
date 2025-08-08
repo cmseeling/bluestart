@@ -42,11 +42,11 @@
 		})}
 	>
 		<div class={css(cellStyle)}>Times</div>
-		{#each activationTimes as time (time)}
+		{#each activationTimes as time, index (index)}
 			<div class={css(cellStyle)}>{time}</div>
 		{/each}
 	</div>
-	{#each dayNames as dayName (dayName)}
+	{#each dayNames as dayName, index (index)}
 		<DayCommands name={dayName} commands={days.get(dayName) || []} timeSlots={activationTimes} />
 	{/each}
 </div>

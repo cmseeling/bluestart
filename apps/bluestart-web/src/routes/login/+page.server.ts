@@ -9,7 +9,6 @@ import { db } from '$lib/server/db';
 
 export const load: PageServerLoad = async () => {
 	console.log('handling login page request');
-	console.log(db.$client.name);
 	const masterAccount = await db.query.userTable.findFirst({
 		where: eq(schema.userTable.isMasterAccount, true)
 	});
