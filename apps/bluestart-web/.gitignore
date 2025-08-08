@@ -23,12 +23,5 @@ Thumbs.db
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
-# SQLite
-*.db
-
 *storybook.log
 storybook-static
-
-## Panda
-styled-system
-styled-system-studio

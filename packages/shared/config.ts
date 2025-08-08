@@ -4,7 +4,7 @@ const environment = z.object({
   DATABASE_URL: z.string().default('')
 });
 
-const dotenvConfigSchema = environment.transform((env) => {
+export const dotenvConfigSchema = environment.transform((env) => {
   return {
     databaseUrl: env.DATABASE_URL
   };

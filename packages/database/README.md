@@ -1,1 +1,1 @@
-# `database`
+# `@bluestart/database`

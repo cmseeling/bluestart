@@ -1,0 +1,24 @@
+import Database from 'better-sqlite3';
+import { drizzle, eq, schema } from "@bluestart/database";
+import type { User } from "@bluestart/database/types";
+import { dotenvConfigSchema } from '@bluestart/shared/config';
+import * as dotenv from 'dotenv';
+
+async function main() {
+    dotenv.config();
+    const dotenvConfig = dotenvConfigSchema.parse(process.env);
+
+    console.log("db url: " + dotenvConfig.databaseUrl);
+
+    const client = new Database(dotenvConfig.databaseUrl);
+
+    const db = drizzle(client, { schema });
+
+    const user: User = await db.query.userTable.findFirst({
+        where: eq(schema.userTable.username, 'chris')
+    });
+
+    console.log(user.id, user.username, user.isMasterAccount);
+};
+
+main();

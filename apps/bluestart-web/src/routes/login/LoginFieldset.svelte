@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Input from '$lib/components/base/input/Input.svelte';
-	import InputContainer from '$lib/components/base/inputContainer/InputContainer.svelte';
-	import { css } from 'styled-system/css';
+	// import Input from '$lib/components/base/input/Input.svelte';
+	// import InputContainer from '$lib/components/base/inputContainer/InputContainer.svelte';
+	// import { css } from 'styled-system/css';
 
 	type Props = {
 		errors?: {
@@ -20,30 +20,29 @@
 </script>
 
 <fieldset>
-	<InputContainer hasError={errors?.username}>
+	<div>
 		<label>
 			Username:
-			<Input
+			<input
 				type="text"
 				name="username"
 				autocomplete="username"
 				required
 				placeholder="username"
-				hasError={errors?.username}
 				bind:value={username}
 			/>
 		</label>
 		{#if errors?.username}
-			<span class={css({ color: 'red.500' })}>Username cannot be empty.</span>
+			<span>Username cannot be empty.</span>
 		{/if}
-	</InputContainer>
-	<InputContainer hasError={errors?.password}>
+	</div>
+	<div>
 		<label>
 			Password:
-			<Input type="password" name="password" autocomplete="current-password" required hasError={errors?.password} />
+			<input type="password" name="password" autocomplete="current-password" required />
 		</label>
 		{#if errors?.password}
-			<span class={css({ color: 'red.500' })}>Incorrect password.</span>
+			<span>Incorrect password.</span>
 		{/if}
-	</InputContainer>
+	</div>
 </fieldset>

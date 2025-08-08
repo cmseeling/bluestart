@@ -1,1 +1,1 @@
-# `shared`
+# `@bluestart/shared`

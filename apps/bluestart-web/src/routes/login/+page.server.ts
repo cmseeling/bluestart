@@ -1,10 +1,11 @@
 import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { db, eq } from '@bluestart/database';
+import { eq } from '@bluestart/database';
 import * as schema from '@bluestart/database/schema';
 import { verifyPasswordHash } from '$lib/server/password';
 import { getUserByName } from '$lib/server/user';
 import { generateSessionToken, createSession, setSessionTokenCookie } from '$lib/server/session';
+import { db } from '$lib/server/db';
 
 export const load: PageServerLoad = async () => {
 	console.log('handling login page request');
