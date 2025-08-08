@@ -1,9 +1,15 @@
 import devtoolsJson from 'vite-plugin-devtools-json';
+import Icons from 'unplugin-icons/vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-	plugins: [sveltekit(), devtoolsJson()],
+	plugins: [sveltekit(), Icons({ compiler: 'svelte' }), devtoolsJson()],
+	server: {
+		fs: {
+			allow: ['styled-system']
+		}
+	},
 	test: {
 		expect: { requireAssertions: true },
 		projects: [

@@ -1,5 +1,3 @@
-export { db } from './database';
-export type { DB } from './database';
 export * as schema from './schema';
 export * as enums from './enums';
 export * as types from './types';

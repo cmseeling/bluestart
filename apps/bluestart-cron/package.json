@@ -13,11 +13,11 @@
   "dependencies": {
     "@bluestart/database": "workspace:*",
     "@bluestart/shared": "workspace:*",
-    "@types/better-sqlite3": "^7.6.13",
     "better-sqlite3": "^12.2.0",
     "dotenv": "^17.2.1"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^24.2.0",
     "esbuild": "^0.25.8",
     "typescript": "^5.9.2"
