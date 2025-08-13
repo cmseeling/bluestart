@@ -1,6 +1,7 @@
+import { TemparatureUnits } from '@bluestart/shared/enums';
 import { relations } from 'drizzle-orm';
 import { index, integer, real, sqliteTable, text } from 'drizzle-orm/sqlite-core';
-import { CommandType, TemparatureUnits } from './enums';
+import { CommandType } from './enums';
 
 export const userTable = sqliteTable('user', {
   id: text('id').primaryKey(),

@@ -1,5 +1,5 @@
 <script module>
-	import { TemparatureUnits } from '@bluestart/database/enums';
+	import { TemparatureUnits } from '@bluestart/shared/enums';
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import CurrentConditions from './CurrentConditions.svelte';
 

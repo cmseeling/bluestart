@@ -1,6 +1,8 @@
 import { drizzle, eq, schema } from '@bluestart/database';
 import type { User } from '@bluestart/database/types';
+import { getGeocoding } from '@bluestart/geocode-client';
 import { dotenvConfigSchema } from '@bluestart/shared/config';
+import { getCurrentWeather, getDailyForecasts } from '@bluestart/weather-client';
 import Database from 'better-sqlite3';
 import * as dotenv from 'dotenv';
 
@@ -19,10 +21,21 @@ async function main() {
   });
 
   console.log(user.id, user.username, user.isMasterAccount);
+
+  // const goecodingResponse = await getGeocoding('minneapolis mn');
+  // console.log(goecodingResponse);
+
+  const lat = 45.9763;
+  const lon = -94.3625;
+
+  // const currentConditions = await getCurrentWeather(lat, lon);
+  // console.log(currentConditions);
+
+  const dailyForecasts = await getDailyForecasts(lat, lon);
+  console.log(dailyForecasts);
 }
 
 main();
-
 
 // import BlueLinky from 'bluelinky';
 

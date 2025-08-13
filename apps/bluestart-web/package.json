@@ -20,6 +20,7 @@
 	},
 	"dependencies": {
 		"@bluestart/database": "workspace:*",
+		"@bluestart/shared": "workspace:*",
 		"@bluestart/weather-api": "workspace:*",
 		"@node-rs/argon2": "^2.0.2",
 		"@oslojs/binary": "^1.0.0",

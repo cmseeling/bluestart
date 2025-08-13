@@ -1,6 +1,6 @@
 <script lang="ts">
 	import WeatherIcon from '$lib/components/base/WeatherIcon/WeatherIcon.svelte';
-	import { TemparatureUnits } from '@bluestart/database/enums';
+	import { TemparatureUnits } from '@bluestart/shared/enums';
 	import { WWWOCodes } from '@bluestart/weather-api';
 	import type { CurrentCondition } from '@bluestart/weather-api/wttr';
 	import { css } from 'styled-system/css';
