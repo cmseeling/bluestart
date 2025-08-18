@@ -6,6 +6,8 @@ import { getCurrentWeather, getDailyForecasts } from '@bluestart/weather-client'
 import Database from 'better-sqlite3';
 import * as dotenv from 'dotenv';
 
+const getCommands = async (db: BetterSQLite3Database<typeof schema>) => {};
+
 async function main() {
   dotenv.config();
   const dotenvConfig = dotenvConfigSchema.parse(process.env);

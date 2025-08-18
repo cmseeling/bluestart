@@ -17,6 +17,7 @@
     "@bluestart/shared": "workspace:*",
     "@bluestart/weather-client": "workspace:*",
     "better-sqlite3": "^12.2.0",
+    "date-fns": "^4.1.0",
     "dotenv": "^17.2.1"
   },
   "devDependencies": {

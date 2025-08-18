@@ -19,10 +19,6 @@ export const sessionTable = sqliteTable('session', {
   expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull()
 });
 
-// export type Session = typeof sessionTable.$inferSelect;
-
-// export type User = typeof userTable.$inferSelect;
-
 export const commands = sqliteTable(
   'commands',
   {
@@ -31,7 +27,9 @@ export const commands = sqliteTable(
       .$defaultFn(() => crypto.randomUUID()),
     name: text().notNull(),
     day: text().notNull(),
-    activationTime: text().notNull()
+    activationTime: text().notNull(),
+    isDisabled: integer({ mode: 'boolean' }).notNull().default(false),
+    lastExecuted: integer({ mode: 'timestamp' }),
   },
   (table) => [index('commands_day_index').on(table.day)]
 );
@@ -77,7 +75,8 @@ export const pauseDates = sqliteTable('pauseDates', {
   commandId: text().references(() => commands.id, {
     onDelete: 'cascade'
   }),
-  pauseDate: integer({ mode: 'timestamp' }).notNull()
+  pauseDateStart: text().notNull(),
+  pauseDateEnd: text().notNull()
 });
 
 export const commandDelays = sqliteTable('commandDelays', {
@@ -87,23 +86,9 @@ export const commandDelays = sqliteTable('commandDelays', {
   commandId: text().references(() => commands.id, {
     onDelete: 'cascade'
   }),
-  date: integer({ mode: 'timestamp' }).notNull(),
+  date: text().notNull(),
   delay: integer().notNull()
 });
-
-// export type Command = typeof commands.$inferSelect;
-// export type Location = typeof locations.$inferSelect;
-// export type CommandSetting = typeof commandSettings.$inferSelect;
-// export type PauseDate = typeof pauseDates.$inferSelect;
-// export type CommandDelay = typeof commandDelays.$inferSelect;
-// export type CommandSettingWithLocation = CommandSetting & {
-//   location?: Location | null;
-// };
-// export type CommandWithAllData = Command & {
-//   settings: CommandSettingWithLocation;
-//   pauseDates: PauseDate[];
-//   delays: CommandDelay[];
-// };
 
 export const commandSettingRelations = relations(commandSettings, ({ one }) => ({
   command: one(commands, {
