@@ -45,6 +45,19 @@ async function main() {
     console.log('Command settings not created. Check DB for existing entry');
   }
 
+  const alreadyExecutedCommandId = randomUUID();
+  const alreadyExecutedCommand: UpsertCommand = {
+    id: alreadyExecutedCommandId,
+    name: 'already executed command',
+    day: 1,
+    activationTime: '7:30',
+    lastExecuted: new Date('August 18, 2025 07:32:00')
+  };
+  const alreadyExecutedResult = await db.insert(schema.commands).values(alreadyExecutedCommand);
+  if (alreadyExecutedResult.changes === 0) {
+    console.log('Already executed command not created. Check DB for existing entry');
+  }
+
   const disabledCommandId = randomUUID();
   const disabledCommand: UpsertCommand = {
     id: disabledCommandId,

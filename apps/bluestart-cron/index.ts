@@ -4,8 +4,10 @@ import {
   drizzle,
   eq,
   gt,
+  isNull,
   lt,
-  notBetween,
+  not,
+  or,
   schema
 } from '@bluestart/database';
 import type { User } from '@bluestart/database/types';
@@ -22,8 +24,10 @@ const getCommands = async (
   date: Date,
   deviation: number
 ) => {
-  const lowerBound = format('h:mm', addMinutes(-deviation, date));
-  const upperBound = format('h:mm', addMinutes(deviation, date));
+  const lowerBound = addMinutes(-deviation, date);
+  const lowerBoundTimeString = format('h:mm', addMinutes(-deviation, date));
+  const upperBound = addMinutes(deviation, date);
+  const upperBoundTimeString = format('h:mm', upperBound);
   console.log(lowerBound);
   console.log(upperBound);
   const today = formatISO(date, { representation: 'date' });
@@ -37,17 +41,23 @@ const getCommands = async (
     Retrieve all commands that:
     - are scheduled for today
     - within the specified time range
+    - have not been executed within the specified time range
     - are not disabled
     - are not paused for today
     */
     .where(
       and(
         eq(schema.commands.day, date.getDay()),
-        gt(schema.commands.activationTime, lowerBound),
-        lt(schema.commands.activationTime, upperBound),
+        gt(schema.commands.activationTime, lowerBoundTimeString),
+        lt(schema.commands.activationTime, upperBoundTimeString),
+        or(lt(schema.commands.lastExecuted, lowerBound), isNull(schema.commands.lastExecuted)),
         eq(schema.commands.isDisabled, false),
-        lt(schema.pauseDates.pauseDateStart, today),
-        gt(schema.pauseDates.pauseDateEnd, today)
+        not(
+          and(
+            lt(schema.pauseDates.pauseDateStart, today),
+            gt(schema.pauseDates.pauseDateEnd, today)
+          )
+        )
       )
     );
 

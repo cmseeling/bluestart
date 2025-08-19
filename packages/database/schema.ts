@@ -26,10 +26,10 @@ export const commands = sqliteTable(
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
     name: text().notNull(),
-    day: integer().notNull(),
+    day: integer({ mode: 'number' }).notNull(),
     activationTime: text().notNull(),
     isDisabled: integer({ mode: 'boolean' }).notNull().default(false),
-    lastExecuted: integer({ mode: 'timestamp' }),
+    lastExecuted: integer({ mode: 'timestamp' })
   },
   (table) => [index('commands_day_index').on(table.day)]
 );
