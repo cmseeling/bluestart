@@ -1,12 +1,58 @@
-import { drizzle, eq, schema } from '@bluestart/database';
+import {
+  and,
+  BetterSQLite3Database,
+  drizzle,
+  eq,
+  gt,
+  lt,
+  notBetween,
+  schema
+} from '@bluestart/database';
 import type { User } from '@bluestart/database/types';
 import { getGeocoding } from '@bluestart/geocode-client';
 import { dotenvConfigSchema } from '@bluestart/shared/config';
 import { getCurrentWeather, getDailyForecasts } from '@bluestart/weather-client';
 import Database from 'better-sqlite3';
+import { formatISO } from 'date-fns';
+import { addMinutes, format } from 'date-fns/fp';
 import * as dotenv from 'dotenv';
 
-const getCommands = async (db: BetterSQLite3Database<typeof schema>) => {};
+const getCommands = async (
+  db: BetterSQLite3Database<typeof schema> & { $client: Database.Database },
+  date: Date,
+  deviation: number
+) => {
+  const lowerBound = format('h:mm', addMinutes(-deviation, date));
+  const upperBound = format('h:mm', addMinutes(deviation, date));
+  console.log(lowerBound);
+  console.log(upperBound);
+  const today = formatISO(date, { representation: 'date' });
+  const results = await db
+    .select()
+    .from(schema.commands)
+    .leftJoin(schema.commandSettings, eq(schema.commands.id, schema.commandSettings.commandId))
+    .leftJoin(schema.commandDelays, eq(schema.commands.id, schema.commandDelays.commandId))
+    .leftJoin(schema.pauseDates, eq(schema.commands.id, schema.pauseDates.commandId))
+    /*
+    Retrieve all commands that:
+    - are scheduled for today
+    - within the specified time range
+    - are not disabled
+    - are not paused for today
+    */
+    .where(
+      and(
+        eq(schema.commands.day, date.getDay()),
+        gt(schema.commands.activationTime, lowerBound),
+        lt(schema.commands.activationTime, upperBound),
+        eq(schema.commands.isDisabled, false),
+        lt(schema.pauseDates.pauseDateStart, today),
+        gt(schema.pauseDates.pauseDateEnd, today)
+      )
+    );
+
+  return results;
+};
 
 async function main() {
   dotenv.config();
@@ -18,11 +64,17 @@ async function main() {
 
   const db = drizzle(client, { schema });
 
-  const user: User = await db.query.userTable.findFirst({
-    where: eq(schema.userTable.username, 'chris')
-  });
+  // const user: User = await db.query.userTable.findFirst({
+  //   where: eq(schema.userTable.username, 'chris')
+  // });
 
-  console.log(user.id, user.username, user.isMasterAccount);
+  // console.log(user.id, user.username, user.isMasterAccount);
+
+  const now = new Date('August 18, 2025 07:30:00');
+
+  const results = await getCommands(db, now, 5);
+  console.log(results);
+  console.log('Total: ' + results.length);
 
   // const goecodingResponse = await getGeocoding('minneapolis mn');
   // console.log(goecodingResponse);
@@ -33,8 +85,8 @@ async function main() {
   // const currentConditions = await getCurrentWeather(lat, lon);
   // console.log(currentConditions);
 
-  const dailyForecasts = await getDailyForecasts(lat, lon);
-  console.log(dailyForecasts);
+  // const dailyForecasts = await getDailyForecasts(lat, lon);
+  // console.log(dailyForecasts);
 }
 
 main();

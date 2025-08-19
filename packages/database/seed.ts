@@ -22,7 +22,7 @@ async function main() {
   const normalCommand: UpsertCommand = {
     id: normalCommandId,
     name: 'normal command',
-    day: 'Monday',
+    day: 1,
     activationTime: '7:30'
   };
   const commandResult = await db.insert(schema.commands).values(normalCommand);
@@ -49,7 +49,7 @@ async function main() {
   const disabledCommand: UpsertCommand = {
     id: disabledCommandId,
     name: 'disabled command',
-    day: 'Monday',
+    day: 1,
     activationTime: '7:30',
     isDisabled: true
   };
@@ -62,7 +62,7 @@ async function main() {
   const pausedCommand: UpsertCommand = {
     id: pausedCommandId,
     name: 'paused command',
-    day: 'Monday',
+    day: 1,
     activationTime: '7:30'
   };
   const pausedCommandResult = await db.insert(schema.commands).values(pausedCommand);
@@ -84,7 +84,7 @@ async function main() {
   const delayedCommand: UpsertCommand = {
     id: delayedCommandId,
     name: 'delayed command',
-    day: 'Monday',
+    day: 1,
     activationTime: '8:00'
   };
   const delayedCommandResult = await db.insert(schema.commands).values(delayedCommand);
