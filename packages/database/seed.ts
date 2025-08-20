@@ -2,7 +2,7 @@ import { dotenvConfigSchema } from '@bluestart/shared/config';
 import { TemparatureUnits } from '@bluestart/shared/enums';
 import Database from 'better-sqlite3';
 import { randomUUID } from 'crypto';
-import { formatISO } from 'date-fns/formatISO';
+import { format, formatISO } from 'date-fns';
 import * as dotenv from 'dotenv';
 import { drizzle, schema } from '.';
 import { CommandType } from './enums';
@@ -18,12 +18,16 @@ async function main() {
 
   const db = drizzle(client, { schema });
 
+  const date = new Date('August 18, 2025 07:30:00');
+  const dateString = formatISO(date, { representation: 'date' });
+  const timeString = format(date, 'h:mm');
+
   const normalCommandId = randomUUID();
   const normalCommand: UpsertCommand = {
     id: normalCommandId,
     name: 'normal command',
     day: 1,
-    activationTime: '7:30'
+    activationTime: timeString
   };
   const commandResult = await db.insert(schema.commands).values(normalCommand);
   if (commandResult.changes === 0) {
@@ -45,12 +49,22 @@ async function main() {
     console.log('Command settings not created. Check DB for existing entry');
   }
 
+  const smallDelayEntry: UpsertCommandDelay = {
+    commandId: normalCommandId,
+    date: dateString,
+    delay: 1
+  };
+  const smallDelayResult = await db.insert(schema.commandDelays).values(smallDelayEntry);
+  if (smallDelayResult.changes === 0) {
+    console.log('Command delay not created. Check DB for existing entry');
+  }
+
   const alreadyExecutedCommandId = randomUUID();
   const alreadyExecutedCommand: UpsertCommand = {
     id: alreadyExecutedCommandId,
     name: 'already executed command',
     day: 1,
-    activationTime: '7:30',
+    activationTime: timeString,
     lastExecuted: new Date('August 18, 2025 07:32:00')
   };
   const alreadyExecutedResult = await db.insert(schema.commands).values(alreadyExecutedCommand);
@@ -63,7 +77,7 @@ async function main() {
     id: disabledCommandId,
     name: 'disabled command',
     day: 1,
-    activationTime: '7:30',
+    activationTime: timeString,
     isDisabled: true
   };
   const disabledCommandResult = await db.insert(schema.commands).values(disabledCommand);
@@ -76,7 +90,7 @@ async function main() {
     id: pausedCommandId,
     name: 'paused command',
     day: 1,
-    activationTime: '7:30'
+    activationTime: timeString
   };
   const pausedCommandResult = await db.insert(schema.commands).values(pausedCommand);
   if (pausedCommandResult.changes === 0) {
@@ -98,7 +112,7 @@ async function main() {
     id: futureCommandId,
     name: 'future pause command',
     day: 1,
-    activationTime: '7:30'
+    activationTime: timeString
   };
   const futureCommandResult = await db.insert(schema.commands).values(futureCommand);
   if (futureCommandResult.changes === 0) {
@@ -135,7 +149,7 @@ async function main() {
     id: delayedCommandId,
     name: 'delayed command',
     day: 1,
-    activationTime: '8:00'
+    activationTime: timeString
   };
   const delayedCommandResult = await db.insert(schema.commands).values(delayedCommand);
   if (delayedCommandResult.changes === 0) {
@@ -144,12 +158,24 @@ async function main() {
 
   const delayEntry: UpsertCommandDelay = {
     commandId: delayedCommandId,
-    date: formatISO(new Date(), { representation: 'date' }),
+    date: dateString,
     delay: 15
   };
   const delayEntryResult = await db.insert(schema.commandDelays).values(delayEntry);
   if (delayEntryResult.changes === 0) {
     console.log('Delay entry not created. Check DB for existing entry');
+  }
+
+  const laterCommandId = randomUUID();
+  const laterCommand: UpsertCommand = {
+    id: laterCommandId,
+    name: 'later command',
+    day: 1,
+    activationTime: format(new Date('August 18, 2025 8:00'), 'h:mm')
+  };
+  const laterCommandResult = await db.insert(schema.commands).values(laterCommand);
+  if (laterCommandResult.changes === 0) {
+    console.log('Later command not created. Check DB for existing entry');
   }
 }
 

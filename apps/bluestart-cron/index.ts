@@ -7,7 +7,6 @@ import {
   isNull,
   lt,
   not,
-  notBetween,
   or,
   schema
 } from '@bluestart/database';
@@ -23,15 +22,13 @@ import * as dotenv from 'dotenv';
 const getCommands = async (
   db: BetterSQLite3Database<typeof schema> & { $client: Database.Database },
   date: Date,
-  deviation: number
+  lowerBound: Date,
+  upperBound: Date
 ) => {
-  const lowerBound = addMinutes(-deviation, date);
-  const lowerBoundTimeString = format('h:mm', addMinutes(-deviation, date));
-  const upperBound = addMinutes(deviation, date);
+  const lowerBoundTimeString = format('h:mm', lowerBound);
   const upperBoundTimeString = format('h:mm', upperBound);
-  console.log(lowerBound);
-  console.log(upperBound);
   const today = formatISO(date, { representation: 'date' });
+
   const results = await db
     .select()
     .from(schema.commands)
@@ -78,21 +75,37 @@ async function main() {
 
   const db = drizzle(client, { schema });
 
-  // const user: User = await db.query.userTable.findFirst({
-  //   where: eq(schema.userTable.username, 'chris')
-  // });
-
   // console.log(user.id, user.username, user.isMasterAccount);
 
+  // TODO: get deviation value from .env
+  const deviation = 5;
   const now = new Date('August 18, 2025 07:30:00');
+  const lowerBound = addMinutes(-deviation, now);
+  const upperBound = addMinutes(deviation, now);
 
-  const results = await getCommands(db, now, 5);
-  console.log(results);
-  console.log('Total: ' + results.length);
+  const results = await getCommands(db, now, lowerBound, upperBound);
+  // console.log(results);
+  console.log('Total from db: ' + results.length);
 
   /*
   for each result, if activation time + delay is still within the range, move ahead with next logic
   */
+  const filteredResults = results.filter((result) => {
+    if (result.commandDelays) {
+      const activationTimestamp = new Date(
+        `${formatISO(now, { representation: 'date' })} ${result.commands.activationTime}`
+      );
+      const shiftedActivationTime = addMinutes(result.commandDelays.delay, activationTimestamp);
+      if (shiftedActivationTime < upperBound) {
+        return true;
+      }
+    } else {
+      return true;
+    }
+  });
+
+  console.log('Total filtered: ' + filteredResults.length);
+  console.log(filteredResults);
 
   // const goecodingResponse = await getGeocoding('minneapolis mn');
   // console.log(goecodingResponse);
