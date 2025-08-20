@@ -93,6 +93,43 @@ async function main() {
     console.log('Pause dates not created. Check DB for existing entry');
   }
 
+  const futureCommandId = randomUUID();
+  const futureCommand: UpsertCommand = {
+    id: futureCommandId,
+    name: 'future pause command',
+    day: 1,
+    activationTime: '7:30'
+  };
+  const futureCommandResult = await db.insert(schema.commands).values(futureCommand);
+  if (futureCommandResult.changes === 0) {
+    console.log('Future pause command not created. Check DB for existing entry');
+  }
+
+  const futureCommandSettings: UpsertCommandSetting = {
+    commandId: futureCommandId,
+    commandType: CommandType.Climate,
+    tempBelow: 20,
+    tempUnits: TemparatureUnits.Fahrenheit,
+    hvacTemp: 76,
+    heatedFeatures: false
+  };
+  const futureSettingsResult = await db
+    .insert(schema.commandSettings)
+    .values(futureCommandSettings);
+  if (futureSettingsResult.changes === 0) {
+    console.log('Future command settings not created. Check DB for existing entry');
+  }
+
+  const futurePauseDates: UpsertPauseDate = {
+    commandId: futureCommandId,
+    pauseDateStart: formatISO(new Date('3999-01-01'), { representation: 'date' }),
+    pauseDateEnd: formatISO(new Date('3999-12-31'), { representation: 'date' })
+  };
+  const futurePauseDatesResult = await db.insert(schema.pauseDates).values(futurePauseDates);
+  if (futurePauseDatesResult.changes === 0) {
+    console.log('Future pause dates not created. Check DB for existing entry');
+  }
+
   const delayedCommandId = randomUUID();
   const delayedCommand: UpsertCommand = {
     id: delayedCommandId,

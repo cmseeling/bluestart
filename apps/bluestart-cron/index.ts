@@ -7,6 +7,7 @@ import {
   isNull,
   lt,
   not,
+  notBetween,
   or,
   schema
 } from '@bluestart/database';
@@ -52,10 +53,13 @@ const getCommands = async (
         lt(schema.commands.activationTime, upperBoundTimeString),
         or(lt(schema.commands.lastExecuted, lowerBound), isNull(schema.commands.lastExecuted)),
         eq(schema.commands.isDisabled, false),
-        not(
-          and(
-            lt(schema.pauseDates.pauseDateStart, today),
-            gt(schema.pauseDates.pauseDateEnd, today)
+        or(
+          and(isNull(schema.pauseDates.pauseDateStart), isNull(schema.pauseDates.pauseDateEnd)),
+          not(
+            and(
+              lt(schema.pauseDates.pauseDateStart, today),
+              gt(schema.pauseDates.pauseDateEnd, today)
+            )
           )
         )
       )
@@ -85,6 +89,10 @@ async function main() {
   const results = await getCommands(db, now, 5);
   console.log(results);
   console.log('Total: ' + results.length);
+
+  /*
+  for each result, if activation time + delay is still within the range, move ahead with next logic
+  */
 
   // const goecodingResponse = await getGeocoding('minneapolis mn');
   // console.log(goecodingResponse);
