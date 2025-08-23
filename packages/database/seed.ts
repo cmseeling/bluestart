@@ -6,7 +6,12 @@ import { format, formatISO } from 'date-fns';
 import * as dotenv from 'dotenv';
 import { drizzle, schema } from '.';
 import { CommandType } from './enums';
-import { UpsertCommand, UpsertCommandDelay, UpsertCommandSetting, UpsertPauseDate } from './types';
+import {
+  UpsertCommand,
+  UpsertCommandDelay,
+  UpsertCommandSettings,
+  UpsertPauseRange
+} from './types';
 
 async function main() {
   dotenv.config();
@@ -29,12 +34,12 @@ async function main() {
     day: 1,
     activationTime: timeString
   };
-  const commandResult = await db.insert(schema.commands).values(normalCommand);
+  const commandResult = await db.insert(schema.commandTable).values(normalCommand);
   if (commandResult.changes === 0) {
     console.log('Command not created. Check DB for existing entry');
   }
 
-  const normalCommandSettings: UpsertCommandSetting = {
+  const normalCommandSettings: UpsertCommandSettings = {
     commandId: normalCommandId,
     commandType: CommandType.Climate,
     tempBelow: 25,
@@ -43,7 +48,7 @@ async function main() {
     heatedFeatures: true
   };
   const normalSettingsResult = await db
-    .insert(schema.commandSettings)
+    .insert(schema.commandSettingsTable)
     .values(normalCommandSettings);
   if (normalSettingsResult.changes === 0) {
     console.log('Command settings not created. Check DB for existing entry');
@@ -54,8 +59,28 @@ async function main() {
     date: dateString,
     delay: 1
   };
-  const smallDelayResult = await db.insert(schema.commandDelays).values(smallDelayEntry);
+  const smallDelayResult = await db.insert(schema.commandDelayTable).values(smallDelayEntry);
   if (smallDelayResult.changes === 0) {
+    console.log('Command delay not created. Check DB for existing entry');
+  }
+
+  const futureDelay1: UpsertCommandDelay = {
+    commandId: normalCommandId,
+    date: formatISO(new Date('August 25, 2025'), { representation: 'date' }),
+    delay: 1
+  };
+  const futureDelay1Result = await db.insert(schema.commandDelayTable).values(futureDelay1);
+  if (futureDelay1Result.changes === 0) {
+    console.log('Command delay not created. Check DB for existing entry');
+  }
+
+  const futureDelay2: UpsertCommandDelay = {
+    commandId: normalCommandId,
+    date: formatISO(new Date('September 1, 2025'), { representation: 'date' }),
+    delay: 1
+  };
+  const futureDelay2Result = await db.insert(schema.commandDelayTable).values(futureDelay2);
+  if (futureDelay2Result.changes === 0) {
     console.log('Command delay not created. Check DB for existing entry');
   }
 
@@ -67,7 +92,7 @@ async function main() {
     activationTime: timeString,
     lastExecuted: new Date('August 18, 2025 07:32:00')
   };
-  const alreadyExecutedResult = await db.insert(schema.commands).values(alreadyExecutedCommand);
+  const alreadyExecutedResult = await db.insert(schema.commandTable).values(alreadyExecutedCommand);
   if (alreadyExecutedResult.changes === 0) {
     console.log('Already executed command not created. Check DB for existing entry');
   }
@@ -80,7 +105,7 @@ async function main() {
     activationTime: timeString,
     isDisabled: true
   };
-  const disabledCommandResult = await db.insert(schema.commands).values(disabledCommand);
+  const disabledCommandResult = await db.insert(schema.commandTable).values(disabledCommand);
   if (disabledCommandResult.changes === 0) {
     console.log('Disabled command not created. Check DB for existing entry');
   }
@@ -92,17 +117,17 @@ async function main() {
     day: 1,
     activationTime: timeString
   };
-  const pausedCommandResult = await db.insert(schema.commands).values(pausedCommand);
+  const pausedCommandResult = await db.insert(schema.commandTable).values(pausedCommand);
   if (pausedCommandResult.changes === 0) {
     console.log('Paused command not created. Check DB for existing entry');
   }
 
-  const pauseDates: UpsertPauseDate = {
+  const pauseDates: UpsertPauseRange = {
     commandId: pausedCommandId,
     pauseDateStart: formatISO(new Date(0), { representation: 'date' }),
     pauseDateEnd: formatISO(new Date('3999-12-31'), { representation: 'date' })
   };
-  const pauseDatesResult = await db.insert(schema.pauseDates).values(pauseDates);
+  const pauseDatesResult = await db.insert(schema.pauseRangeTable).values(pauseDates);
   if (pauseDatesResult.changes === 0) {
     console.log('Pause dates not created. Check DB for existing entry');
   }
@@ -114,12 +139,12 @@ async function main() {
     day: 1,
     activationTime: timeString
   };
-  const futureCommandResult = await db.insert(schema.commands).values(futureCommand);
+  const futureCommandResult = await db.insert(schema.commandTable).values(futureCommand);
   if (futureCommandResult.changes === 0) {
     console.log('Future pause command not created. Check DB for existing entry');
   }
 
-  const futureCommandSettings: UpsertCommandSetting = {
+  const futureCommandSettings: UpsertCommandSettings = {
     commandId: futureCommandId,
     commandType: CommandType.Climate,
     tempBelow: 20,
@@ -128,20 +153,32 @@ async function main() {
     heatedFeatures: false
   };
   const futureSettingsResult = await db
-    .insert(schema.commandSettings)
+    .insert(schema.commandSettingsTable)
     .values(futureCommandSettings);
   if (futureSettingsResult.changes === 0) {
     console.log('Future command settings not created. Check DB for existing entry');
   }
 
-  const futurePauseDates: UpsertPauseDate = {
+  const futurePauseDates: UpsertPauseRange = {
     commandId: futureCommandId,
     pauseDateStart: formatISO(new Date('3999-01-01'), { representation: 'date' }),
     pauseDateEnd: formatISO(new Date('3999-12-31'), { representation: 'date' })
   };
-  const futurePauseDatesResult = await db.insert(schema.pauseDates).values(futurePauseDates);
+  const futurePauseDatesResult = await db.insert(schema.pauseRangeTable).values(futurePauseDates);
   if (futurePauseDatesResult.changes === 0) {
     console.log('Future pause dates not created. Check DB for existing entry');
+  }
+
+  const secondFuturePauseDates: UpsertPauseRange = {
+    commandId: futureCommandId,
+    pauseDateStart: formatISO(new Date('3899-01-01'), { representation: 'date' }),
+    pauseDateEnd: formatISO(new Date('3899-12-31'), { representation: 'date' })
+  };
+  const secondFuturePauseDatesResult = await db
+    .insert(schema.pauseRangeTable)
+    .values(secondFuturePauseDates);
+  if (secondFuturePauseDatesResult.changes === 0) {
+    console.log('Second future pause dates not created. Check DB for existing entry');
   }
 
   const delayedCommandId = randomUUID();
@@ -151,7 +188,7 @@ async function main() {
     day: 1,
     activationTime: timeString
   };
-  const delayedCommandResult = await db.insert(schema.commands).values(delayedCommand);
+  const delayedCommandResult = await db.insert(schema.commandTable).values(delayedCommand);
   if (delayedCommandResult.changes === 0) {
     console.log('Delayed command not created. Check DB for existing entry');
   }
@@ -161,7 +198,7 @@ async function main() {
     date: dateString,
     delay: 15
   };
-  const delayEntryResult = await db.insert(schema.commandDelays).values(delayEntry);
+  const delayEntryResult = await db.insert(schema.commandDelayTable).values(delayEntry);
   if (delayEntryResult.changes === 0) {
     console.log('Delay entry not created. Check DB for existing entry');
   }
@@ -173,7 +210,7 @@ async function main() {
     day: 1,
     activationTime: format(new Date('August 18, 2025 8:00'), 'h:mm')
   };
-  const laterCommandResult = await db.insert(schema.commands).values(laterCommand);
+  const laterCommandResult = await db.insert(schema.commandTable).values(laterCommand);
   if (laterCommandResult.changes === 0) {
     console.log('Later command not created. Check DB for existing entry');
   }

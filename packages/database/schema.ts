@@ -19,8 +19,12 @@ export const sessionTable = sqliteTable('session', {
   expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull()
 });
 
-export const commands = sqliteTable(
-  'commands',
+// export const appSettingsTable = sqlite('appSetting', {
+
+// })
+
+export const commandTable = sqliteTable(
+  'command',
   {
     id: text()
       .primaryKey()
@@ -31,35 +35,36 @@ export const commands = sqliteTable(
     isDisabled: integer({ mode: 'boolean' }).notNull().default(false),
     lastExecuted: integer({ mode: 'timestamp' })
   },
-  (table) => [index('commands_day_index').on(table.day)]
+  (table) => [index('command_day_index').on(table.day)]
 );
 
-export const locations = sqliteTable(
-  'locations',
-  {
-    id: text()
-      .primaryKey()
-      .$defaultFn(() => crypto.randomUUID()),
-    name: text().notNull(),
-    latitude: real().notNull(),
-    letitude: real().notNull()
-  },
-  (table) => [index('locations_name_index').on(table.name)]
-);
+// possible future enhancement: only run command if vehicle is at specific location
+// export const locationTable = sqliteTable(
+//   'location',
+//   {
+//     id: text()
+//       .primaryKey()
+//       .$defaultFn(() => crypto.randomUUID()),
+//     name: text().notNull(),
+//     latitude: real().notNull(),
+//     letitude: real().notNull()
+//   },
+//   (table) => [index('locations_name_index').on(table.name)]
+// );
 
-export const commandSettings = sqliteTable('commandSettings', {
+export const commandSettingsTable = sqliteTable('commandSettings', {
   id: text()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
   commandType: text({
     enum: [CommandType.Climate, CommandType.Charging]
   }).notNull(),
-  commandId: text().references(() => commands.id, {
+  commandId: text().references(() => commandTable.id, {
     onDelete: 'cascade'
   }),
-  locationId: text().references(() => locations.id, {
-    onDelete: 'set null'
-  }),
+  // locationId: text().references(() => locations.id, {
+  //   onDelete: 'set null'
+  // }),
   tempAbove: integer(),
   tempBelow: integer(),
   tempUnits: text({ enum: [TemparatureUnits.Fahrenheit, TemparatureUnits.Celsius] }),
@@ -68,55 +73,62 @@ export const commandSettings = sqliteTable('commandSettings', {
   heatedFeatures: integer({ mode: 'boolean' })
 });
 
-export const pauseDates = sqliteTable('pauseDates', {
+export const pauseRangeTable = sqliteTable('pauseRange', {
   id: text()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  commandId: text().references(() => commands.id, {
+  commandId: text().references(() => commandTable.id, {
     onDelete: 'cascade'
   }),
   pauseDateStart: text().notNull(),
   pauseDateEnd: text().notNull()
 });
 
-export const commandDelays = sqliteTable('commandDelays', {
+export const commandDelayTable = sqliteTable('commandDelay', {
   id: text()
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
-  commandId: text().references(() => commands.id, {
+  commandId: text().references(() => commandTable.id, {
     onDelete: 'cascade'
   }),
   date: text().notNull(),
   delay: integer().notNull()
 });
 
-export const commandSettingRelations = relations(commandSettings, ({ one }) => ({
-  command: one(commands, {
-    fields: [commandSettings.commandId],
-    references: [commands.id]
-  }),
-  location: one(locations, {
-    fields: [commandSettings.locationId],
-    references: [locations.id]
+// export const commandSettingRelations = relations(commandSettings, ({ one }) => ({
+//   command: one(commands, {
+//     fields: [commandSettings.commandId],
+//     references: [commands.id]
+//   }),
+//   location: one(locations, {
+//     fields: [commandSettings.locationId],
+//     references: [locations.id]
+//   })
+// }));
+
+export const commandSettingsRelations = relations(commandSettingsTable, ({ one }) => ({
+  command: one(commandTable, {
+    fields: [commandSettingsTable.commandId],
+    references: [commandTable.id]
   })
 }));
 
-export const pauseDateRelations = relations(pauseDates, ({ one }) => ({
-  command: one(commands, {
-    fields: [pauseDates.commandId],
-    references: [commands.id]
+export const pauseDateRelations = relations(pauseRangeTable, ({ one }) => ({
+  command: one(commandTable, {
+    fields: [pauseRangeTable.commandId],
+    references: [commandTable.id]
   })
 }));
 
-export const commandDelayRelations = relations(commandDelays, ({ one }) => ({
-  command: one(commands, {
-    fields: [commandDelays.commandId],
-    references: [commands.id]
+export const commandDelayRelations = relations(commandDelayTable, ({ one }) => ({
+  command: one(commandTable, {
+    fields: [commandDelayTable.commandId],
+    references: [commandTable.id]
   })
 }));
 
-export const commandRelations = relations(commands, ({ one, many }) => ({
-  settings: one(commandSettings),
-  pauseDates: many(pauseDates),
-  delays: many(commandDelays)
+export const commandRelations = relations(commandTable, ({ one, many }) => ({
+  settings: one(commandSettingsTable),
+  pauseDates: many(pauseRangeTable),
+  delays: many(commandDelayTable)
 }));

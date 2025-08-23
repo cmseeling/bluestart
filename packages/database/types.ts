@@ -1,32 +1,32 @@
 import {
-  userTable,
+  commandDelayTable,
+  commandTable,
+  // locations,
+  commandSettingsTable,
+  pauseRangeTable,
   sessionTable,
-  commands,
-  locations,
-  commandSettings,
-  pauseDates,
-  commandDelays
+  userTable
 } from './schema';
 
 export type User = typeof userTable.$inferSelect;
 export type Session = typeof sessionTable.$inferSelect;
 
-export type Command = typeof commands.$inferSelect;
-export type UpsertCommand = typeof commands.$inferInsert;
-export type Location = typeof locations.$inferSelect;
-export type UpsertLocation = typeof locations.$inferInsert;
-export type CommandSetting = typeof commandSettings.$inferSelect;
-export type UpsertCommandSetting = typeof commandSettings.$inferInsert;
-export type PauseDate = typeof pauseDates.$inferSelect;
-export type UpsertPauseDate = typeof pauseDates.$inferInsert;
-export type CommandDelay = typeof commandDelays.$inferSelect;
-export type UpsertCommandDelay = typeof commandDelays.$inferInsert;
+export type Command = typeof commandTable.$inferSelect;
+export type UpsertCommand = typeof commandTable.$inferInsert;
+// export type Location = typeof locations.$inferSelect;
+// export type UpsertLocation = typeof locations.$inferInsert;
+export type CommandSettings = typeof commandSettingsTable.$inferSelect;
+export type UpsertCommandSettings = typeof commandSettingsTable.$inferInsert;
+export type PauseRange = typeof pauseRangeTable.$inferSelect;
+export type UpsertPauseRange = typeof pauseRangeTable.$inferInsert;
+export type CommandDelay = typeof commandDelayTable.$inferSelect;
+export type UpsertCommandDelay = typeof commandDelayTable.$inferInsert;
 
-export type CommandSettingWithLocation = CommandSetting & {
-  location?: Location | null;
-};
+// export type CommandSettingWithLocation = CommandSetting & {
+//   location?: Location | null;
+// };
 export type CommandWithAllData = Command & {
-  settings: CommandSettingWithLocation;
-  pauseDates: PauseDate[];
+  settings: CommandSettings;
+  pauseRanges: PauseRange[];
   delays: CommandDelay[];
 };

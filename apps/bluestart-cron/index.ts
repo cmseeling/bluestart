@@ -10,7 +10,7 @@ import {
   or,
   schema
 } from '@bluestart/database';
-import type { User } from '@bluestart/database/types';
+import type { CommandWithAllData, User } from '@bluestart/database/types';
 import { getGeocoding } from '@bluestart/geocode-client';
 import { dotenvConfigSchema } from '@bluestart/shared/config';
 import { getCurrentWeather, getDailyForecasts } from '@bluestart/weather-client';
@@ -31,10 +31,16 @@ const getCommands = async (
 
   const results = await db
     .select()
-    .from(schema.commands)
-    .leftJoin(schema.commandSettings, eq(schema.commands.id, schema.commandSettings.commandId))
-    .leftJoin(schema.commandDelays, eq(schema.commands.id, schema.commandDelays.commandId))
-    .leftJoin(schema.pauseDates, eq(schema.commands.id, schema.pauseDates.commandId))
+    .from(schema.commandTable)
+    .leftJoin(
+      schema.commandSettingsTable,
+      eq(schema.commandTable.id, schema.commandSettingsTable.commandId)
+    )
+    .leftJoin(
+      schema.commandDelayTable,
+      eq(schema.commandTable.id, schema.commandDelayTable.commandId)
+    )
+    .leftJoin(schema.pauseRangeTable, eq(schema.commandTable.id, schema.pauseRangeTable.commandId))
     /*
     Retrieve all commands that:
     - are scheduled for today
@@ -45,24 +51,70 @@ const getCommands = async (
     */
     .where(
       and(
-        eq(schema.commands.day, date.getDay()),
-        gt(schema.commands.activationTime, lowerBoundTimeString),
-        lt(schema.commands.activationTime, upperBoundTimeString),
-        or(lt(schema.commands.lastExecuted, lowerBound), isNull(schema.commands.lastExecuted)),
-        eq(schema.commands.isDisabled, false),
+        eq(schema.commandTable.day, date.getDay()),
+        gt(schema.commandTable.activationTime, lowerBoundTimeString),
+        lt(schema.commandTable.activationTime, upperBoundTimeString),
         or(
-          and(isNull(schema.pauseDates.pauseDateStart), isNull(schema.pauseDates.pauseDateEnd)),
+          lt(schema.commandTable.lastExecuted, lowerBound),
+          isNull(schema.commandTable.lastExecuted)
+        ),
+        eq(schema.commandTable.isDisabled, false),
+        or(
+          and(
+            isNull(schema.pauseRangeTable.pauseDateStart),
+            isNull(schema.pauseRangeTable.pauseDateEnd)
+          ),
           not(
             and(
-              lt(schema.pauseDates.pauseDateStart, today),
-              gt(schema.pauseDates.pauseDateEnd, today)
+              lt(schema.pauseRangeTable.pauseDateStart, today),
+              gt(schema.pauseRangeTable.pauseDateEnd, today)
             )
           )
         )
       )
     );
 
-  return results;
+  const reducedCommands: Map<string, Omit<CommandWithAllData, 'pauseDates'>> = results.reduce(
+    (map, result, index) => {
+      // add a new entry
+      if (!map.has(result.command.id)) {
+        map.set(result.command.id, {
+          ...result.command,
+          settings: result.commandSettings,
+          delays: result.commandDelay ? [result.commandDelay] : []
+        });
+      }
+      // add the delays to the existing entry
+      else {
+        const existingEntry = map.get(result.command.id);
+        // null check for delay
+        if (existingEntry && result.commandDelay) {
+          existingEntry.delays.push(result.commandDelay);
+        }
+      }
+
+      return map;
+    },
+    new Map()
+  );
+
+  // const results = await db.query.command.findMany({
+  //   where: and(
+  //     eq(schema.command.day, date.getDay()),
+  //     gt(schema.command.activationTime, lowerBoundTimeString),
+  //     lt(schema.command.activationTime, upperBoundTimeString),
+  //     or(lt(schema.command.lastExecuted, lowerBound), isNull(schema.command.lastExecuted)),
+  //     eq(schema.command.isDisabled, false)
+  //   ),
+  //   with: {
+  //     settings: true,
+  //     delays: true,
+  //     pauseDates: true
+  //   }
+  // });
+
+  // return results;
+  return Array.from(reducedCommands.values());
 };
 
 async function main() {
@@ -91,21 +143,26 @@ async function main() {
   for each result, if activation time + delay is still within the range, move ahead with next logic
   */
   const filteredResults = results.filter((result) => {
-    if (result.commandDelays) {
-      const activationTimestamp = new Date(
-        `${formatISO(now, { representation: 'date' })} ${result.commands.activationTime}`
-      );
-      const shiftedActivationTime = addMinutes(result.commandDelays.delay, activationTimestamp);
-      if (shiftedActivationTime < upperBound) {
-        return true;
+    if (result.delays.length > 0) {
+      // for now, assume there will only ever be one delay per day
+      const delayToday = result.delays.find((delay) => {
+        return delay.date === formatISO(now, { representation: 'date' });
+      });
+      if (delayToday) {
+        const activationTimestamp = new Date(
+          `${formatISO(now, { representation: 'date' })} ${result.activationTime}`
+        );
+        const shiftedActivationTime = addMinutes(delayToday.delay, activationTimestamp);
+        if (shiftedActivationTime >= upperBound) {
+          return false;
+        }
       }
-    } else {
-      return true;
     }
+    return true;
   });
 
-  console.log('Total filtered: ' + filteredResults.length);
   console.log(filteredResults);
+  console.log('Total filtered: ' + filteredResults.length);
 
   // const goecodingResponse = await getGeocoding('minneapolis mn');
   // console.log(goecodingResponse);
