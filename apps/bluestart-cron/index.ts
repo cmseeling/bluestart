@@ -22,9 +22,10 @@ import * as dotenv from 'dotenv';
 const getCommands = async (
   db: BetterSQLite3Database<typeof schema> & { $client: Database.Database },
   date: Date,
-  lowerBound: Date,
-  upperBound: Date
+  deviation: number
 ) => {
+  const lowerBound = addMinutes(-deviation, date);
+  const upperBound = addMinutes(deviation, date);
   const lowerBoundTimeString = format('h:mm', lowerBound);
   const upperBoundTimeString = format('h:mm', upperBound);
   const today = formatISO(date, { representation: 'date' });
@@ -74,46 +75,46 @@ const getCommands = async (
       )
     );
 
-  const reducedCommands: Map<string, Omit<CommandWithAllData, 'pauseDates'>> = results.reduce(
-    (map, result, index) => {
-      // add a new entry
-      if (!map.has(result.command.id)) {
-        map.set(result.command.id, {
-          ...result.command,
-          settings: result.commandSettings,
-          delays: result.commandDelay ? [result.commandDelay] : []
-        });
+  /*
+  for each result, if activation time + delay is still within the range, move ahead with next logic
+  */
+  const filteredResults = results.filter((result) => {
+    if (result.commandDelay) {
+      const activationTimestamp = new Date(
+        `${formatISO(date, { representation: 'date' })} ${result.command.activationTime}`
+      );
+      const shiftedActivationTime = addMinutes(result.commandDelay.delay, activationTimestamp);
+      if (shiftedActivationTime >= upperBound) {
+        return false;
       }
-      // add the delays to the existing entry
-      else {
-        const existingEntry = map.get(result.command.id);
-        // null check for delay
-        if (existingEntry && result.commandDelay) {
-          existingEntry.delays.push(result.commandDelay);
-        }
+    }
+    return true;
+  });
+
+  const reducedCommands: Map<
+    string,
+    Omit<CommandWithAllData, 'pauseDates'>
+  > = filteredResults.reduce((map, result, index) => {
+    // add a new entry
+    if (!map.has(result.command.id)) {
+      map.set(result.command.id, {
+        ...result.command,
+        settings: result.commandSettings,
+        delays: result.commandDelay ? [result.commandDelay] : []
+      });
+    }
+    // add the delays to the existing entry
+    else {
+      const existingEntry = map.get(result.command.id);
+      // null check for delay
+      if (existingEntry && result.commandDelay) {
+        existingEntry.delays.push(result.commandDelay);
       }
+    }
 
-      return map;
-    },
-    new Map()
-  );
+    return map;
+  }, new Map());
 
-  // const results = await db.query.command.findMany({
-  //   where: and(
-  //     eq(schema.command.day, date.getDay()),
-  //     gt(schema.command.activationTime, lowerBoundTimeString),
-  //     lt(schema.command.activationTime, upperBoundTimeString),
-  //     or(lt(schema.command.lastExecuted, lowerBound), isNull(schema.command.lastExecuted)),
-  //     eq(schema.command.isDisabled, false)
-  //   ),
-  //   with: {
-  //     settings: true,
-  //     delays: true,
-  //     pauseDates: true
-  //   }
-  // });
-
-  // return results;
   return Array.from(reducedCommands.values());
 };
 
@@ -132,37 +133,10 @@ async function main() {
   // TODO: get deviation value from .env
   const deviation = 5;
   const now = new Date('August 18, 2025 07:30:00');
-  const lowerBound = addMinutes(-deviation, now);
-  const upperBound = addMinutes(deviation, now);
 
-  const results = await getCommands(db, now, lowerBound, upperBound);
-  // console.log(results);
+  const results = await getCommands(db, now, deviation);
+  console.log(results);
   console.log('Total from db: ' + results.length);
-
-  /*
-  for each result, if activation time + delay is still within the range, move ahead with next logic
-  */
-  const filteredResults = results.filter((result) => {
-    if (result.delays.length > 0) {
-      // for now, assume there will only ever be one delay per day
-      const delayToday = result.delays.find((delay) => {
-        return delay.date === formatISO(now, { representation: 'date' });
-      });
-      if (delayToday) {
-        const activationTimestamp = new Date(
-          `${formatISO(now, { representation: 'date' })} ${result.activationTime}`
-        );
-        const shiftedActivationTime = addMinutes(delayToday.delay, activationTimestamp);
-        if (shiftedActivationTime >= upperBound) {
-          return false;
-        }
-      }
-    }
-    return true;
-  });
-
-  console.log(filteredResults);
-  console.log('Total filtered: ' + filteredResults.length);
 
   // const goecodingResponse = await getGeocoding('minneapolis mn');
   // console.log(goecodingResponse);
