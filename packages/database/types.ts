@@ -25,8 +25,12 @@ export type UpsertCommandDelay = typeof commandDelayTable.$inferInsert;
 // export type CommandSettingWithLocation = CommandSetting & {
 //   location?: Location | null;
 // };
-export type CommandWithAllData = Command & {
+
+export type CommandWithSettings = Command & {
   settings: CommandSettings;
+};
+
+export type CommandWithAllData = CommandWithSettings & {
   pauseRanges: PauseRange[];
   delays: CommandDelay[];
 };

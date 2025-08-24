@@ -10,7 +10,7 @@ import {
   or,
   schema
 } from '@bluestart/database';
-import type { CommandWithAllData, User } from '@bluestart/database/types';
+import type { CommandWithSettings } from '@bluestart/database/types';
 import { getGeocoding } from '@bluestart/geocode-client';
 import { dotenvConfigSchema } from '@bluestart/shared/config';
 import { getCurrentWeather, getDailyForecasts } from '@bluestart/weather-client';
@@ -23,7 +23,7 @@ const getCommands = async (
   db: BetterSQLite3Database<typeof schema> & { $client: Database.Database },
   date: Date,
   deviation: number
-) => {
+): Promise<CommandWithSettings[]> => {
   const lowerBound = addMinutes(-deviation, date);
   const upperBound = addMinutes(deviation, date);
   const lowerBoundTimeString = format('h:mm', lowerBound);
@@ -91,31 +91,18 @@ const getCommands = async (
     return true;
   });
 
-  const reducedCommands: Map<
-    string,
-    Omit<CommandWithAllData, 'pauseDates'>
-  > = filteredResults.reduce((map, result, index) => {
-    // add a new entry
-    if (!map.has(result.command.id)) {
-      map.set(result.command.id, {
+  const reducedCommands: CommandWithSettings[] = filteredResults.reduce((accum, result, index) => {
+    if (!accum.some((command) => command.id === result.command.id)) {
+      accum.push({
         ...result.command,
-        settings: result.commandSettings,
-        delays: result.commandDelay ? [result.commandDelay] : []
+        settings: result.commandSettings
       });
     }
-    // add the delays to the existing entry
-    else {
-      const existingEntry = map.get(result.command.id);
-      // null check for delay
-      if (existingEntry && result.commandDelay) {
-        existingEntry.delays.push(result.commandDelay);
-      }
-    }
 
-    return map;
-  }, new Map());
+    return accum;
+  }, []);
 
-  return Array.from(reducedCommands.values());
+  return reducedCommands;
 };
 
 async function main() {
