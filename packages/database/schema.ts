@@ -19,9 +19,13 @@ export const sessionTable = sqliteTable('session', {
   expiresAt: integer('expires_at', { mode: 'timestamp' }).notNull()
 });
 
-// export const appSettingsTable = sqlite('appSetting', {
-
-// })
+export const configurationTable = sqliteTable('configuration', {
+  id: text()
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  key: text().unique().notNull(),
+  value: text().notNull()
+});
 
 export const commandTable = sqliteTable(
   'command',
@@ -33,7 +37,7 @@ export const commandTable = sqliteTable(
     day: integer({ mode: 'number' }).notNull(),
     activationTime: text().notNull(),
     isDisabled: integer({ mode: 'boolean' }).notNull().default(false),
-    lastExecuted: integer({ mode: 'timestamp' })
+    lastChecked: integer({ mode: 'timestamp' })
   },
   (table) => [index('command_day_index').on(table.day)]
 );

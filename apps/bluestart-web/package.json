@@ -27,7 +27,8 @@
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
 		"better-sqlite3": "^12.2.0",
-		"bits-ui": "^2.9.2"
+		"bits-ui": "^2.9.2",
+		"bluelinky": "^10.0.0"
 	},
 	"devDependencies": {
 		"@bluestart/eslint-config": "workspace:*",

@@ -7,9 +7,11 @@ import * as dotenv from 'dotenv';
 import { drizzle, schema } from '.';
 import { CommandType } from './enums';
 import {
+  LocationConfiguration,
   UpsertCommand,
   UpsertCommandDelay,
   UpsertCommandSettings,
+  UpsertConfiguration,
   UpsertPauseRange
 } from './types';
 
@@ -90,7 +92,7 @@ async function main() {
     name: 'already executed command',
     day: 1,
     activationTime: timeString,
-    lastExecuted: new Date('August 18, 2025 07:32:00')
+    lastChecked: new Date('August 18, 2025 07:32:00')
   };
   const alreadyExecutedResult = await db.insert(schema.commandTable).values(alreadyExecutedCommand);
   if (alreadyExecutedResult.changes === 0) {
@@ -213,6 +215,18 @@ async function main() {
   const laterCommandResult = await db.insert(schema.commandTable).values(laterCommand);
   if (laterCommandResult.changes === 0) {
     console.log('Later command not created. Check DB for existing entry');
+  }
+
+  const location: LocationConfiguration = {
+    address: 'Minneapolis, MN'
+  };
+  const locationConfig: UpsertConfiguration = {
+    key: 'location',
+    value: JSON.stringify(location)
+  };
+  const locationConfigResult = await db.insert(schema.configurationTable).values(locationConfig);
+  if (locationConfigResult.changes === 0) {
+    console.log('Location configuration not created. Check DB for existing entry');
   }
 }
 
