@@ -17,6 +17,8 @@ import type {
 } from '@bluestart/database/types';
 import { getGeocoding } from '@bluestart/geocode-client';
 import { dotenvConfigSchema } from '@bluestart/shared/config';
+import { ConsoleLogger } from '@bluestart/shared/ConsoleLogger';
+import type { WeatherClientConfig } from '@bluestart/weather-client';
 import { getCurrentWeather } from '@bluestart/weather-client';
 import Database from 'better-sqlite3';
 import { BlueLinky } from 'bluelinky';
@@ -27,10 +29,11 @@ import * as dotenv from 'dotenv';
 const getCommands = async (
   db: BetterSQLite3Database<typeof schema> & { $client: Database.Database },
   date: Date,
-  deviation: number
+  timeBuffer: number,
+  logger?: ConsoleLogger
 ): Promise<CommandWithSettings[]> => {
-  const lowerBound = addMinutes(-deviation, date);
-  const upperBound = addMinutes(deviation, date);
+  const lowerBound = addMinutes(-timeBuffer, date);
+  const upperBound = addMinutes(timeBuffer, date);
   const lowerBoundTimeString = format('h:mm', lowerBound);
   const upperBoundTimeString = format('h:mm', upperBound);
   const today = formatISO(date, { representation: 'date' });
@@ -79,6 +82,9 @@ const getCommands = async (
         )
       )
     );
+  if (logger) {
+    logger.debug(results);
+  }
 
   /*
   for each result, if activation time + delay is still within the range, move ahead with next logic
@@ -95,6 +101,9 @@ const getCommands = async (
     }
     return true;
   });
+  if (logger) {
+    logger.debug(filteredResults);
+  }
 
   const reducedCommands: CommandWithSettings[] = filteredResults.reduce((accum, result, index) => {
     if (!accum.some((command) => command.id === result.command.id)) {
@@ -111,7 +120,8 @@ const getCommands = async (
 };
 
 const getLocationGeocode = async (
-  db: BetterSQLite3Database<typeof schema> & { $client: Database.Database }
+  db: BetterSQLite3Database<typeof schema> & { $client: Database.Database },
+  logger?: ConsoleLogger
 ): Promise<Geolocation> => {
   const config = await db.query.configurationTable.findFirst({
     where: eq(schema.configurationTable.key, 'location')
@@ -123,8 +133,10 @@ const getLocationGeocode = async (
   const locationConfig: LocationConfiguration = JSON.parse(config.value);
 
   if (!locationConfig.geolocation) {
+    if (logger) {
+      logger.info('Location geolocation not found, fetching from geocoding API');
+    }
     const geocodingResponse = await getGeocoding(locationConfig.address);
-    console.log(geocodingResponse);
 
     locationConfig.geolocation = {
       latitude: parseFloat(geocodingResponse[0].lat),
@@ -135,74 +147,94 @@ const getLocationGeocode = async (
       .update(schema.configurationTable)
       .set({ value: JSON.stringify(locationConfig) })
       .where(eq(schema.configurationTable.key, 'location'));
-    console.log(updateResult);
+    logger.debug(`Updated location config: ${JSON.stringify(locationConfig)}`);
   }
 
   return locationConfig.geolocation;
+};
+
+const getWeatherConfig = async (
+  db: BetterSQLite3Database<typeof schema> & { $client: Database.Database },
+  logger?: ConsoleLogger
+): Promise<WeatherClientConfig> => {
+  const config = await db.query.configurationTable.findFirst({
+    where: eq(schema.configurationTable.key, 'weatherUnits')
+  });
+  if (!config) {
+    throw new Error('Weather units configuration not found');
+  }
+  return JSON.parse(config.value) as WeatherClientConfig;
 };
 
 async function main() {
   dotenv.config();
   const dotenvConfig = dotenvConfigSchema.parse(process.env);
 
-  console.log(dotenvConfig);
+  const logger = new ConsoleLogger('bluestart-cron', dotenvConfig.logLevel);
+  logger.debug(dotenvConfig);
 
-  const dbClient = new Database(dotenvConfig.databaseUrl);
+  try {
+    const dbClient = new Database(dotenvConfig.databaseUrl);
+    const db = drizzle(dbClient, { schema });
 
-  const db = drizzle(dbClient, { schema });
+    const now = new Date('August 18, 2025 07:30:00');
 
-  // TODO: get deviation value from .env
-  const deviation = 5;
-  const now = new Date('August 18, 2025 07:30:00');
+    const commands = await getCommands(db, now, dotenvConfig.timeBuffer, logger);
+    logger.debug(commands);
+    logger.info(`Total commands from db: ${commands.length}`);
 
-  const commands = await getCommands(db, now, deviation);
-  console.log(commands);
-  console.log('Total from db: ' + commands.length);
+    const location = await getLocationGeocode(db, logger);
 
-  const location = await getLocationGeocode(db);
+    const weatherConfig = await getWeatherConfig(db, logger);
 
-  const currentConditions = await getCurrentWeather(location.latitude, location.longitude);
-  console.log(currentConditions);
+    const currentConditions = await getCurrentWeather(
+      location.latitude,
+      location.longitude,
+      weatherConfig
+    );
+    logger.info(currentConditions);
 
-  const blueLinkyClient = new BlueLinky({
-    username: dotenvConfig.blueLinkUsername,
-    password: dotenvConfig.blueLinkPassword,
-    brand: dotenvConfig.blueLinkBrand,
-    region: dotenvConfig.blueLinkRegion,
-    pin: dotenvConfig.blueLinkPIN
-  });
+    const blueLinkyClient = new BlueLinky({
+      username: dotenvConfig.blueLinkUsername,
+      password: dotenvConfig.blueLinkPassword,
+      brand: dotenvConfig.blueLinkBrand,
+      region: dotenvConfig.blueLinkRegion,
+      pin: dotenvConfig.blueLinkPIN
+    });
 
-  blueLinkyClient.on('error', (error) => {
-    console.error('Error:', error);
+    blueLinkyClient.on('error', (error) => {
+      // let outer try/catch log this
+      throw error;
+    });
+
+    blueLinkyClient.on('ready', async () => {
+      const vehicle = blueLinkyClient.getVehicle(dotenvConfig.vehicleVIN);
+      commands.forEach(async (command) => {
+        if (
+          currentConditions.temperature >= command.settings.tempAbove ||
+          currentConditions.temperature <= command.settings.tempBelow
+        ) {
+          const startResponse = await vehicle.start({
+            hvac: true,
+            duration: 10,
+            defrost: command.settings.defrost,
+            temperature: command.settings.hvacTemp,
+            unit: command.settings.tempUnits,
+            heatedFeatures: command.settings.heatedFeatures
+          });
+        }
+
+        const commandUpdateResult = await db
+          .update(schema.commandTable)
+          .set({ lastChecked: now })
+          .where(eq(schema.commandTable.id, command.id));
+        logger.info(commandUpdateResult);
+      });
+    });
+  } catch (error) {
+    logger.error(error);
     throw error;
-  });
-
-  blueLinkyClient.on('ready', async () => {
-    const vehicle = blueLinkyClient.getVehicle(dotenvConfig.vehicleVIN);
-    // commands.forEach(async (command) => {
-    //   if (
-    //     currentConditions.temperature >= command.settings.tempAbove ||
-    //     currentConditions.temperature <= command.settings.tempBelow
-    //   ) {
-    //     const startResponse = await vehicle.start({
-    //       hvac: true,
-    //       duration: 10,
-    //       defrost: command.settings.defrost,
-    //       temperature: command.settings.hvacTemp,
-    //       unit: 'F',
-    //       heatedFeatures: command.settings.heatedFeatures
-    //     });
-    //   }
-
-    //   const commandUpdateResult = await db
-    //     .update(schema.commandTable)
-    //     .set({ lastChecked: now })
-    //     .where(eq(schema.commandTable.id, command.id));
-    //   console.log(commandUpdateResult);
-    // });
-    const response = await vehicle.status({ parsed: true, refresh: false });
-    console.log(response);
-  });
+  }
 }
 
 main();

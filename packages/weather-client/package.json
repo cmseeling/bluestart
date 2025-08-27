@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@bluestart/shared": "workspace:*",
+    "@openmeteo/sdk": "^1.20.1",
     "openmeteo": "^1.2.0"
   }
 }

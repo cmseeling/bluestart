@@ -337,6 +337,9 @@ importers:
       '@bluestart/shared':
         specifier: workspace:*
         version: link:../shared
+      '@openmeteo/sdk':
+        specifier: ^1.20.1
+        version: 1.20.1
       openmeteo:
         specifier: ^1.2.0
         version: 1.2.0

@@ -228,6 +228,20 @@ async function main() {
   if (locationConfigResult.changes === 0) {
     console.log('Location configuration not created. Check DB for existing entry');
   }
+
+  const weatherUnitsConfig: UpsertConfiguration = {
+    key: 'weatherUnits',
+    value: JSON.stringify({
+      temperature_unit: 'fahrenheit',
+      precipitation_unit: 'inch'
+    })
+  };
+  const weatherUnitsConfigResult = await db
+    .insert(schema.configurationTable)
+    .values(weatherUnitsConfig);
+  if (weatherUnitsConfigResult.changes === 0) {
+    console.log('Weather units configuration not created. Check DB for existing entry');
+  }
 }
 
 main();
