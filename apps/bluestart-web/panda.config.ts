@@ -50,7 +50,7 @@ export default defineConfig({
 		},
 		semanticTokens: {
 			colors: {
-				body: { value: '{colors.base}' },
+				body: { value: '{colors.surface0}' },
 				text: {
 					regular: { value: '{colors.text}' },
 					dark: { value: '{colors.surface0}' },

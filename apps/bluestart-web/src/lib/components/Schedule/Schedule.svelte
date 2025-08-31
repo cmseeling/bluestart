@@ -28,7 +28,8 @@
 <div
 	data-componentName="schedule"
 	class={css({
-		border: '1px solid black',
+		border: '1px solid',
+		borderColor: 'text',
 		display: 'flex',
 		flexDirection: 'row',
 		justifyContent: 'space-evenly'

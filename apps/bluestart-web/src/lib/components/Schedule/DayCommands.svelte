@@ -26,17 +26,17 @@
 	<div
 		data-testid="command-list"
 		class={css({
-			height: '100%',
+			height: 'full',
 			display: 'flex',
 			flexWrap: 'nowrap',
 			gap: '1'
 		})}
 	>
 		{#if commands.length === 0}
-			<div class={css({ flexGrow: '1' })}>&nbsp;</div>
+			<div class={css({ flexGrow: 1 })}>&nbsp;</div>
 		{:else}
 			{#each commands as command, index (index)}
-				<Button class={css({ flexGrow: '1', width: '100%' })}>
+				<Button class={css({ flexGrow: 1, width: 'full' })}>
 					{command.name}
 				</Button>
 			{/each}

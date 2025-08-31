@@ -1,7 +1,7 @@
 <script lang="ts">
+	import Button from '$lib/components/base/button/Button.svelte';
 	import { css } from 'styled-system/css';
 	import LoginFieldset from './LoginFieldset.svelte';
-	import Button from '$lib/components/base/button/Button.svelte';
 
 	const { form } = $props();
 </script>

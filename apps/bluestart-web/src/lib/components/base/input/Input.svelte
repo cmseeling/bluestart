@@ -6,7 +6,6 @@
 		hasError?: boolean;
 	};
 	let { hasError, value = $bindable(), ...props }: Props = $props();
-	console.log(hasError);
 </script>
 
 <input bind:value {...props} class={inputStyle({ error: hasError })} />

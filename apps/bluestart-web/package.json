@@ -22,13 +22,15 @@
 		"@bluestart/database": "workspace:*",
 		"@bluestart/shared": "workspace:*",
 		"@bluestart/weather-api": "workspace:*",
+		"@bluestart/weather-client": "workspace:*",
 		"@node-rs/argon2": "^2.0.2",
 		"@oslojs/binary": "^1.0.0",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
 		"better-sqlite3": "^12.2.0",
 		"bits-ui": "^2.9.2",
-		"bluelinky": "^10.0.0"
+		"bluelinky": "^10.0.0",
+		"zod": "^4.0.15"
 	},
 	"devDependencies": {
 		"@bluestart/eslint-config": "workspace:*",
