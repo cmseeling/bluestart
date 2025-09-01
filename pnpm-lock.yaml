@@ -75,6 +75,9 @@ importers:
       '@bluestart/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@bluestart/geocode-client':
+        specifier: workspace:*
+        version: link:../../packages/geocode-client
       '@bluestart/shared':
         specifier: workspace:*
         version: link:../../packages/shared

@@ -1,25 +1,23 @@
 <script lang="ts">
-	import Dropdown from '$lib/components/base/dropdown/Dropdown.svelte';
 	import Input from '$lib/components/base/input/Input.svelte';
 	import InputContainer from '$lib/components/base/inputContainer/InputContainer.svelte';
+	import RadioGroup from '$lib/components/base/radiogroup/RadioGroup.svelte';
 	import { css } from 'styled-system/css';
 
 	type Props = {
-		errors?: Map<string, string>;
-		formValues?: {
-			location?: FormDataEntryValue | null;
-			temperatureUnits?: FormDataEntryValue | null;
-			precipitationUnits?: FormDataEntryValue | null;
+		formValues: {
+			location?: string;
+			temperatureUnits: string;
+			precipitationUnits: string;
 		};
+		errors?: Map<string, string>;
 	};
 
-	const { errors, formValues }: Props = $props();
-	console.log(errors);
-	// console.log(formValues);
+	const { formValues, errors }: Props = $props();
 
-	let location = $state(formValues?.location);
-	let temperatureUnits = $state(formValues?.temperatureUnits);
-	let precipitationUnits = $state(formValues?.precipitationUnits);
+	let location = $state(formValues.location);
+	let temperatureUnits = $state(formValues.temperatureUnits);
+	let precipitationUnits = $state(formValues.precipitationUnits);
 </script>
 
 <fieldset>
@@ -35,33 +33,43 @@
 			/>
 		</label>
 		{#if errors?.has('location')}
-			<span class={css({ color: 'red.500' })}>Location cannot be empty.</span>
+			<span class={css({ color: 'red.500' })}>{errors.get('location')}</span>
 		{/if}
 	</InputContainer>
 	<InputContainer hasError={errors?.has('temperatureUnits')}>
 		<label>
 			Temperature Units:
-			<Dropdown name="temperatureUnits" bind:value={temperatureUnits}>
-				<option value=""></option>
-				<option value="celsius">Celsius</option>
-				<option value="fahrenheit">Fahrenheit</option>
-			</Dropdown>
+			<RadioGroup
+				items={[
+					{ label: 'Celsius', value: 'celsius' },
+					{ label: 'Fahrenheit', value: 'fahrenheit' }
+				]}
+				bind:value={temperatureUnits}
+				name="temperatureUnits"
+				hasError={errors?.has('temperatureUnits')}
+				orientation="horizontal"
+			/>
 		</label>
 		{#if errors?.has('temperatureUnits')}
-			<span class={css({ color: 'red.500' })}>Temperature units cannot be empty.</span>
+			<span class={css({ color: 'red.500' })}>{errors.get('temperatureUnits')}</span>
 		{/if}
 	</InputContainer>
 	<InputContainer hasError={errors?.has('precipitationUnits')}>
 		<label>
 			Precipitation Units:
-			<Dropdown name="precipitationUnits" bind:value={precipitationUnits}>
-				<option value=""></option>
-				<option value="mm">Millimeters</option>
-				<option value="inch">Inches</option>
-			</Dropdown>
+			<RadioGroup
+				items={[
+					{ label: 'Millimeters', value: 'mm' },
+					{ label: 'Inches', value: 'inch' }
+				]}
+				bind:value={precipitationUnits}
+				name="precipitationUnits"
+				hasError={errors?.has('precipitationUnits')}
+				orientation="horizontal"
+			/>
 		</label>
 		{#if errors?.has('precipitationUnits')}
-			<span class={css({ color: 'red.500' })}>Precipitation units cannot be empty.</span>
+			<span class={css({ color: 'red.500' })}>{errors.get('precipitationUnits')}</span>
 		{/if}
 	</InputContainer>
 </fieldset>

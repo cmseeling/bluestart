@@ -16,26 +16,6 @@
 		minHeight: '100vh'
 	})}
 >
-	<!-- <div
-		class={css({
-			minHeight: '100vh',
-			height: 'full',
-			display: 'flex',
-			flexDirection: 'column',
-			alignItems: 'stretch',
-			alignContent: 'stretch'
-		})}
-	>
-		<Header />
-		<div
-			class={css({ flexGrow: 1, display: 'flex', alignItems: 'stretch', alignContent: 'stretch' })}
-		>
-			<Menu />
-			<div class={css({ height: 'full' })}>
-				{@render children?.()}
-			</div>
-		</div>
-	</div> -->
 	<div
 		class={css({
 			height: '100vh',

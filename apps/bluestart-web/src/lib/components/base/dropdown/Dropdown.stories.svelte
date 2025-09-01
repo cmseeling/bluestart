@@ -18,7 +18,7 @@
 	<option value="Saturday">Saturday</option>
 </Story>
 
-<Story name="Error State">
+<Story name="Error State" args={{ hasError: true }}>
 	<option value="above">Above</option>
 	<option value="below">Below</option>
 </Story>

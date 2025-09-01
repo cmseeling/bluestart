@@ -59,6 +59,6 @@
 			>Settings</a
 		>
 		<div class={css({ flexGrow: 1 })}></div>
-		<Button variant="primary">Log Out</Button>
+		<Button variant="primary" class={css({ marginBottom: '16' })}>Log Out</Button>
 	</div>
 </div>

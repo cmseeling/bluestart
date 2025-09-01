@@ -5,6 +5,7 @@
 	type Props = HTMLSelectAttributes & {
 		hasError?: boolean;
 	};
+
 	let { hasError, value = $bindable(), children, ...props }: Props = $props();
 </script>
 

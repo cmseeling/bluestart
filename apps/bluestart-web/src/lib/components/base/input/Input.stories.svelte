@@ -8,13 +8,6 @@
 	});
 </script>
 
-<Story name="Default">
-	<div>
-		<Input type="text" hasError={false} name="storybook-example" placeholder="placeholder" />
-		<input type="text" placeholder="test" />
-	</div>
-</Story>
+<Story name="Default" args={{ placeholder: 'placeholder' }} />
 
-<Story name="Error State">
-	<Input type="text" hasError={true} name="storybook-example" />
-</Story>
+<Story name="Error State" args={{ hasError: true }} />

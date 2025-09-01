@@ -13,6 +13,7 @@
 	<Input type="text" name="username" />
 </Story>
 
-<Story name="Error State">
+<Story name="Error State" args={{ hasError: true }}>
 	<Input type="text" name="username" />
+	<div>Error message</div>
 </Story>

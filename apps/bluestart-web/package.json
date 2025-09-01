@@ -20,6 +20,7 @@
 	},
 	"dependencies": {
 		"@bluestart/database": "workspace:*",
+		"@bluestart/geocode-client": "workspace:*",
 		"@bluestart/shared": "workspace:*",
 		"@bluestart/weather-api": "workspace:*",
 		"@bluestart/weather-client": "workspace:*",

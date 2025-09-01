@@ -4,7 +4,14 @@
 
 	const { Story } = defineMeta({
 		title: 'Settings/SettingsFieldset',
-		component: SettingsFieldset
+		component: SettingsFieldset,
+		args: {
+			formValues: {
+				location: '',
+				temperatureUnits: '',
+				precipitationUnits: ''
+			}
+		}
 	});
 </script>
 

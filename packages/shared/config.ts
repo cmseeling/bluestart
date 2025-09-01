@@ -9,7 +9,7 @@ const environment = z.object({
   BLUELINK_REGION: z.literal(['US', 'CA', 'EU', 'CN', 'AU']).default('US'),
   BLUELINK_PIN: z.string().default(''),
   VEHICLE_VIN: z.string().default(''),
-  TIME_BUFFER: z.number().default(5),
+  TIME_BUFFER: z.coerce.number().default(5),
   LOG_LEVEL: z.enum(LogLevel).default(LogLevel.ERROR)
 });
 

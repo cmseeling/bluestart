@@ -1,12 +1,14 @@
 import { env } from '$env/dynamic/private';
-import { ConsoleLogger, LogLevel } from '@bluestart/shared/ConsoleLogger';
+import { db } from '$lib/server/db';
+import { eq, schema } from '@bluestart/database';
+import type { LocationConfiguration } from '@bluestart/database/types';
+import { getGeocoding } from '@bluestart/geocode-client';
+import { dotenvConfigSchema } from '@bluestart/shared/config';
+import { ConsoleLogger } from '@bluestart/shared/ConsoleLogger';
+import type { WeatherClientConfig } from '@bluestart/weather-client';
 import { fail, type RequestEvent } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import settingsSchema from './validationSchema';
-import { dotenvConfigSchema } from '@bluestart/shared/config';
-import { db } from '$lib/server/db';
-import type { LocationConfiguration } from '@bluestart/database/types';
-import type { WeatherClientConfig } from '@bluestart/weather-client';
 
 const dotenvConfig = dotenvConfigSchema.parse(env);
 
@@ -17,40 +19,25 @@ export const load: PageServerLoad = async () => {
 	const settings = await db.query.configurationTable.findMany();
 	const location = settings.find((setting) => setting.key == 'location');
 	const units = settings.find((setting) => setting.key == 'weatherUnits');
-	logger.debug(location, units);
+	logger.debug('', location, units);
 
-	let formValueLocation = null;
-	let formValueTemperatureUnits = null;
-	let formValuePrecipitationUnits = null;
+	const formValues = {
+		location: '',
+		temperatureUnits: '',
+		precipitationUnits: ''
+	};
 
 	if (location) {
 		const parsedLocation: LocationConfiguration = JSON.parse(location.value);
-		formValueLocation = parsedLocation.address;
+		formValues.location = parsedLocation.address;
 	}
-
 	if (units) {
 		const parsedUnits: WeatherClientConfig = JSON.parse(units.value);
-		formValueTemperatureUnits = parsedUnits.temperature_unit;
-		formValuePrecipitationUnits = parsedUnits.precipitation_unit;
+		formValues.temperatureUnits = parsedUnits.temperature_unit;
+		formValues.precipitationUnits = parsedUnits.precipitation_unit;
 	}
 
-	// logger.debug(
-	// 	'Form values: ',
-	// 	formValueLocation,
-	// 	formValueTemperatureUnits,
-	// 	formValuePrecipitationUnits
-	// );
-
-	return {
-		form: {
-			errors: undefined,
-			formValues: {
-				location: formValueLocation,
-				temperatureUnits: formValueTemperatureUnits,
-				precipitationUnits: formValuePrecipitationUnits
-			}
-		}
-	};
+	return { formValues };
 };
 
 export const actions = {
@@ -58,22 +45,81 @@ export const actions = {
 		logger.info('handling settings form action');
 		const { request } = event;
 		const formData = Object.fromEntries(await request.formData());
-		const settings = settingsSchema.safeParse(formData);
-		logger.debug(settings);
+		logger.debug(formData);
+		const settingsValues = settingsSchema.safeParse(formData);
+		logger.debug(settingsValues);
 
-		if (!settings.success) {
-			const errors: Map<string, string> = settings.error.issues.reduce((acc, error) => {
+		if (!settingsValues.success) {
+			const errors: Map<string, string> = settingsValues.error.issues.reduce((acc, error) => {
 				acc.set(error.path[0].toString(), error.message);
 				return acc;
 			}, new Map<string, string>());
-			logger.info(errors);
+			logger.error(errors);
 
-			return fail(400, {
-				form: {
-					errors,
-					formValues: { location: null, temperatureUnits: null, precipitationUnits: null }
-				}
-			});
+			return fail(400, { errors });
 		}
+
+		const settings = await db.query.configurationTable.findMany();
+
+		const locationData: LocationConfiguration = {
+			address: settingsValues.data.location
+		};
+
+		try {
+			const geocodingResponse = await getGeocoding(settingsValues.data.location);
+			locationData.geolocation = {
+				latitude: parseFloat(geocodingResponse[0].lat),
+				longitude: parseFloat(geocodingResponse[0].lon)
+			};
+		} catch (error) {
+			logger.error(error);
+			return fail(500, { error: { message: 'There was an error geocoding the location' } });
+		}
+
+		try {
+			if (settings.find((setting) => setting.key === 'location')) {
+				const locationUpdateResult = await db
+					.update(schema.configurationTable)
+					.set({ value: JSON.stringify(locationData) })
+					.where(eq(schema.configurationTable.key, 'location'));
+				logger.debug(locationUpdateResult);
+			} else {
+				const locationInsertResult = await db.insert(schema.configurationTable).values({
+					key: 'location',
+					value: JSON.stringify(locationData)
+				});
+				logger.debug(locationInsertResult);
+			}
+		} catch (error) {
+			logger.error(error);
+			return fail(500, { error: { message: 'There was an error saving the location' } });
+		}
+
+		// save units
+		const unitSettings: WeatherClientConfig = {
+			temperature_unit: settingsValues.data.temperatureUnits,
+			precipitation_unit: settingsValues.data.precipitationUnits
+		};
+
+		try {
+			if (settings.find((setting) => setting.key === 'weatherUnits')) {
+				const unitUpdateResult = await db
+					.update(schema.configurationTable)
+					.set({ value: JSON.stringify(unitSettings) })
+					.where(eq(schema.configurationTable.key, 'weatherUnits'));
+				logger.debug(unitUpdateResult);
+			} else {
+				const unitInsertResult = await db.insert(schema.configurationTable).values({
+					key: 'weatherUnits',
+					value: JSON.stringify(unitSettings)
+				});
+				logger.debug(unitInsertResult);
+			}
+		} catch (error) {
+			logger.error(error);
+			return fail(500, { error: { message: 'There was an error saving the units' } });
+		}
+
+		return { success: true };
 	}
 };
