@@ -1,12 +1,12 @@
 import {
   commandDelayTable,
-  commandTable,
-  // locations,
   commandSettingsTable,
+  commandTable,
+  configurationTable,
+  // locations,
   pauseRangeTable,
   sessionTable,
-  userTable,
-  configurationTable
+  userTable
 } from './schema';
 
 export type User = typeof userTable.$inferSelect;

@@ -4,6 +4,7 @@
 	import LoginFieldset from './LoginFieldset.svelte';
 
 	const { form } = $props();
+	console.log('FROM PAGE:', form);
 </script>
 
 <div

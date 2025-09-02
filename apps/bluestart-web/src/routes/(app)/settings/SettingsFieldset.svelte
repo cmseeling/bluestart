@@ -28,6 +28,7 @@
 				type="text"
 				name="location"
 				placeholder="location"
+				required
 				hasError={errors?.has('location')}
 				bind:value={location}
 			/>
@@ -46,6 +47,7 @@
 				]}
 				bind:value={temperatureUnits}
 				name="temperatureUnits"
+				required
 				hasError={errors?.has('temperatureUnits')}
 				orientation="horizontal"
 			/>
@@ -64,6 +66,7 @@
 				]}
 				bind:value={precipitationUnits}
 				name="precipitationUnits"
+				required
 				hasError={errors?.has('precipitationUnits')}
 				orientation="horizontal"
 			/>

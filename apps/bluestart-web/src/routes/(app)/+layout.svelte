@@ -1,7 +1,8 @@
 <script lang="ts">
-	import '../app.css';
+	import '../../app.css';
 	import { css } from 'styled-system/css';
 	import favicon from '$lib/assets/favicon.svg';
+	import Menu from '$lib/components/menu/Menu.svelte';
 
 	let { children } = $props();
 </script>
@@ -21,6 +22,7 @@
 			display: 'flex'
 		})}
 	>
+		<Menu />
 		<div class={css({ flexGrow: 1 })}>
 			{@render children?.()}
 		</div>

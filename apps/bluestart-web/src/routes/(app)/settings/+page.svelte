@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { applyAction, enhance } from '$app/forms';
 	import Button from '$lib/components/base/button/Button.svelte';
-	import { css } from 'styled-system/css';
-	import SettingsFieldset from './SettingsFieldset.svelte';
-	import type { PageProps } from './$types';
 	import type { ActionResult } from '@sveltejs/kit';
+	import { css } from 'styled-system/css';
+	import type { PageProps } from './$types';
+	import SettingsFieldset from './SettingsFieldset.svelte';
 
 	const { data, form }: PageProps = $props();
 
