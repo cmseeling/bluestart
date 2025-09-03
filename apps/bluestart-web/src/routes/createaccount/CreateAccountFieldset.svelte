@@ -24,7 +24,13 @@
 	<InputContainer hasError={errors?.has('username')}>
 		<label>
 			Username:
-			<Input type="text" name="username" hasError={errors?.has('username')} bind:value={username} />
+			<Input
+				type="text"
+				name="username"
+				required
+				hasError={errors?.has('username')}
+				bind:value={username}
+			/>
 		</label>
 		{#if errors?.has('username')}
 			<span class={css({ color: 'red.500' })}>{errors.get('username')}</span>
@@ -33,7 +39,7 @@
 	<InputContainer hasError={errors?.has('password')}>
 		<label>
 			Password:
-			<Input type="password" name="password" hasError={errors?.has('password')} />
+			<Input type="password" name="password" required hasError={errors?.has('password')} />
 		</label>
 		{#if errors?.has('password')}
 			<span class={css({ color: 'red.500' })}>{errors.get('password')}</span>
@@ -42,7 +48,12 @@
 	<InputContainer hasError={errors?.has('confirmPassword')}>
 		<label>
 			Re-type Password:
-			<Input type="password" name="confirmPassword" hasError={errors?.has('confirmPassword')} />
+			<Input
+				type="password"
+				name="confirmPassword"
+				required
+				hasError={errors?.has('confirmPassword')}
+			/>
 		</label>
 		{#if errors?.has('confirmPassword')}
 			<span class={css({ color: 'red.500' })}>{errors.get('confirmPassword')}</span>
