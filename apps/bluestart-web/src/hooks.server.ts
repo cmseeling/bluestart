@@ -8,7 +8,7 @@ import { redirect, type Handle } from '@sveltejs/kit';
 
 export const handle: Handle = async ({ event, resolve }) => {
 	console.log(`server hook running on route ${event.route.id}`);
-	if (event.route.id?.includes('login') || event.route.id?.includes('admin/createmasteraccount')) {
+	if (event.route.id?.includes('login') || event.route.id?.includes('createaccount')) {
 		return resolve(event);
 	}
 

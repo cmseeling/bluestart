@@ -3,7 +3,7 @@ import { db } from '$lib/server/db';
 import { verifyPasswordHash } from '$lib/server/password';
 import { createSession, generateSessionToken, setSessionTokenCookie } from '$lib/server/session';
 import { getUserByName } from '$lib/server/user';
-import { eq } from '@bluestart/database';
+import { count } from '@bluestart/database';
 import * as schema from '@bluestart/database/schema';
 import { dotenvConfigSchema } from '@bluestart/shared/config';
 import { ConsoleLogger } from '@bluestart/shared/ConsoleLogger';
@@ -17,11 +17,9 @@ const logger = new ConsoleLogger('bluestart-web.login', dotenvConfig.logLevel);
 
 export const load: PageServerLoad = async () => {
 	logger.info('handling login page request');
-	const masterAccount = await db.query.userTable.findFirst({
-		where: eq(schema.userTable.isMasterAccount, true)
-	});
-	if (masterAccount === null || masterAccount === undefined) {
-		return redirect(303, '/admin/createmasteraccount');
+	const userCount = await db.select({ count: count() }).from(schema.userTable);
+	if (userCount[0].count === 0) {
+		return redirect(303, '/createaccount');
 	}
 };
 

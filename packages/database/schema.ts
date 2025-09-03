@@ -7,8 +7,7 @@ export const userTable = sqliteTable('user', {
   id: text('id').primaryKey(),
   username: text('username').notNull().unique(),
   passwordHash: text('password_hash').notNull(),
-  forcePasswordChange: integer({ mode: 'boolean' }).notNull().default(false),
-  isMasterAccount: integer({ mode: 'boolean' }).notNull().default(false)
+  forcePasswordChange: integer({ mode: 'boolean' }).notNull().default(false)
 });
 
 export const sessionTable = sqliteTable('session', {

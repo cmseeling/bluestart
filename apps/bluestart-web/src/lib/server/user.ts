@@ -13,7 +13,6 @@ export async function createUser(username: string, password: string): Promise<Us
 
 	const user: User = {
 		id: crypto.randomUUID(),
-		isMasterAccount: true,
 		username,
 		passwordHash,
 		forcePasswordChange: false
