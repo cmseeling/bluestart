@@ -8,8 +8,6 @@
 
 	const { data, form }: PageProps = $props();
 
-	// also zodify other forms (login, register)
-
 	let showSuccessMsg = $state(false);
 	let showFailureMsg = $state(false);
 	let errorMessage = $state('Failed to save settings.');
