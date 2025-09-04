@@ -1,8 +1,8 @@
 <script lang="ts">
+	import Dropdown from '$lib/components/base/dropdown/Dropdown.svelte';
 	import Input from '$lib/components/base/input/Input.svelte';
 	import InputContainer from '$lib/components/base/inputContainer/InputContainer.svelte';
 	import { css } from 'styled-system/css';
-	import Dropdown from '../base/dropdown/Dropdown.svelte';
 
 	type Props = {
 		errors?: {

@@ -1,18 +1,27 @@
-<script module>
+<script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import SettingsFieldset from './SettingsFieldset.svelte';
+
+	const formValues = {
+		location: '',
+		temperatureUnits: '',
+		precipitationUnits: ''
+	};
+
+	const errors: Map<string, string> = new Map();
+	errors.set('location', 'Location is required');
+	errors.set('temperatureUnits', 'Temperature units are required.');
+	errors.set('precipitationUnits', 'Precipitation units are required.');
 
 	const { Story } = defineMeta({
 		title: 'Settings/SettingsFieldset',
 		component: SettingsFieldset,
 		args: {
-			formValues: {
-				location: '',
-				temperatureUnits: '',
-				precipitationUnits: ''
-			}
+			formValues
 		}
 	});
 </script>
 
 <Story name="Default" />
+
+<Story name="Error State" args={{ formValues, errors }} />

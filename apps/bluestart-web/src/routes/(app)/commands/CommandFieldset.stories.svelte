@@ -10,6 +10,4 @@
 
 <Story name="Default" />
 
-<!-- <Story name="Error State">
-    <CommandFieldset errors={{ username: true, password: true }} />
-</Story> -->
+<Story name="Error State" args={{ errors: { username: true, password: true } }} />
