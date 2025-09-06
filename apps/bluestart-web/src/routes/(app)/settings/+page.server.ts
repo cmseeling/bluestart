@@ -1,7 +1,7 @@
 import { env } from '$env/dynamic/private';
 import { db } from '$lib/server/db';
 import { eq, schema } from '@bluestart/database';
-import type { LocationConfiguration } from '@bluestart/database/types';
+import type { Geolocation, LocationConfiguration } from '@bluestart/database/types';
 import { getGeocoding } from '@bluestart/geocode-client';
 import { dotenvConfigSchema } from '@bluestart/shared/config';
 import { ConsoleLogger } from '@bluestart/shared/ConsoleLogger';
@@ -14,6 +14,13 @@ const dotenvConfig = dotenvConfigSchema.parse(env);
 
 const logger = new ConsoleLogger('bluestart-web.settings', dotenvConfig.logLevel);
 
+type FormValues = {
+	location: string;
+	geolocation?: Geolocation;
+	temperatureUnits: string;
+	precipitationUnits: string;
+};
+
 export const load: PageServerLoad = async () => {
 	logger.info('loading existing settings');
 	const settings = await db.query.configurationTable.findMany();
@@ -21,8 +28,9 @@ export const load: PageServerLoad = async () => {
 	const units = settings.find((setting) => setting.key == 'weatherUnits');
 	logger.debug('', location, units);
 
-	const formValues = {
+	const formValues: FormValues = {
 		location: '',
+		geolocation: undefined,
 		temperatureUnits: '',
 		precipitationUnits: ''
 	};
@@ -30,6 +38,7 @@ export const load: PageServerLoad = async () => {
 	if (location) {
 		const parsedLocation: LocationConfiguration = JSON.parse(location.value);
 		formValues.location = parsedLocation.address;
+		formValues.geolocation = parsedLocation.geolocation;
 	}
 	if (units) {
 		const parsedUnits: WeatherClientConfig = JSON.parse(units.value);
@@ -120,6 +129,13 @@ export const actions = {
 			return fail(500, { error: { message: 'There was an error saving the units' } });
 		}
 
-		return { success: true };
+		const formValues: FormValues = {
+			location: locationData.address,
+			geolocation: locationData.geolocation,
+			temperatureUnits: unitSettings.temperature_unit,
+			precipitationUnits: unitSettings.precipitation_unit
+		};
+
+		return { success: true, formValues };
 	}
 };

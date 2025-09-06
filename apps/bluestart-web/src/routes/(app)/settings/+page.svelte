@@ -5,16 +5,30 @@
 	import { css } from 'styled-system/css';
 	import type { PageProps } from './$types';
 	import SettingsFieldset from './SettingsFieldset.svelte';
+	import SettingsView from './SettingsView.svelte';
 
 	const { data, form }: PageProps = $props();
 
+	let viewData = $state(data.formValues);
+
+	let isEditing = $state(false);
+
 	let showSuccessMsg = $state(false);
 	let showFailureMsg = $state(false);
+
+	const hideStatusMessages = () => {
+		showSuccessMsg = false;
+		showFailureMsg = false;
+	};
+
 	let errorMessage = $state('Failed to save settings.');
 
 	const handleForm = () => {
 		return async ({ result }: { result: ActionResult }) => {
+			console.log(result);
 			if (result.type === 'success') {
+				viewData = result.data?.formValues;
+				isEditing = false;
 				showSuccessMsg = true;
 			} else if (result.type === 'failure') {
 				showFailureMsg = true;
@@ -40,21 +54,41 @@
 		>
 			Settings
 		</h2>
-		<form
-			method="POST"
-			use:enhance={handleForm}
-			class={css({ borderTop: '1px solid', paddingTop: '4' })}
-		>
-			<SettingsFieldset formValues={data.formValues} errors={form?.errors} />
-			<div
-				class={css({
-					display: 'flex',
-					justifyContent: 'flex-end'
-				})}
+		{#if isEditing}
+			<form
+				method="POST"
+				use:enhance={handleForm}
+				class={css({ borderTop: '1px solid', paddingTop: '4' })}
 			>
-				<Button type="submit">Save</Button>
+				<SettingsFieldset formValues={data.formValues} errors={form?.errors} />
+				<div
+					class={css({
+						display: 'flex',
+						justifyContent: 'flex-end',
+						gap: '4'
+					})}
+				>
+					<Button
+						type="button"
+						onclick={() => {
+							hideStatusMessages();
+							isEditing = false;
+						}}>Cancel</Button
+					>
+					<Button type="submit">Save</Button>
+				</div>
+			</form>
+		{:else}
+			<div class={css({ marginBottom: 4 })}>
+				<SettingsView formValues={viewData} />
 			</div>
-		</form>
+			<Button
+				onclick={() => {
+					hideStatusMessages();
+					isEditing = true;
+				}}>Edit</Button
+			>
+		{/if}
 		{#if showSuccessMsg}
 			<p
 				class={css({
