@@ -70,7 +70,6 @@ export const commandSettingsTable = sqliteTable('commandSettings', {
   // }),
   tempAbove: integer(),
   tempBelow: integer(),
-  tempUnits: text({ enum: [TemparatureUnits.Fahrenheit, TemparatureUnits.Celsius] }),
   hvacTemp: integer(),
   defrost: integer({ mode: 'boolean' }),
   heatedFeatures: integer({ mode: 'boolean' })

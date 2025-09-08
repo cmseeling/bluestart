@@ -45,7 +45,6 @@ async function main() {
     commandId: normalCommandId,
     commandType: CommandType.Climate,
     tempBelow: 25,
-    tempUnits: TemparatureUnits.Fahrenheit,
     hvacTemp: 76,
     heatedFeatures: true
   };
@@ -150,7 +149,6 @@ async function main() {
     commandId: futureCommandId,
     commandType: CommandType.Climate,
     tempBelow: 20,
-    tempUnits: TemparatureUnits.Fahrenheit,
     hvacTemp: 76,
     heatedFeatures: false
   };
@@ -230,10 +228,10 @@ async function main() {
   }
 
   const weatherUnitsConfig: UpsertConfiguration = {
-    key: 'weatherUnits',
+    key: 'units',
     value: JSON.stringify({
-      temperature_unit: 'fahrenheit',
-      precipitation_unit: 'inch'
+      temperature: 'fahrenheit',
+      precipitation: 'inch'
     })
   };
   const weatherUnitsConfigResult = await db

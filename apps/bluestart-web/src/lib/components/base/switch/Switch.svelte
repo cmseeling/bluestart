@@ -14,8 +14,6 @@
 		hasError?: boolean;
 	} = $props();
 
-	console.log(hasError);
-
 	const containerStyle = cva({
 		base: {
 			display: 'flex',

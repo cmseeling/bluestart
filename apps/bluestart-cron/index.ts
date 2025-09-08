@@ -18,7 +18,7 @@ import type {
 import { getGeocoding } from '@bluestart/geocode-client';
 import { dotenvConfigSchema } from '@bluestart/shared/config';
 import { ConsoleLogger } from '@bluestart/shared/ConsoleLogger';
-import type { WeatherClientConfig } from '@bluestart/weather-client';
+import { UnitConfiguration } from '@bluestart/shared/types';
 import { getCurrentWeather } from '@bluestart/weather-client';
 import Database from 'better-sqlite3';
 import { BlueLinky } from 'bluelinky';
@@ -153,17 +153,17 @@ const getLocationGeocode = async (
   return locationConfig.geolocation;
 };
 
-const getWeatherConfig = async (
+const getUnitConfig = async (
   db: BetterSQLite3Database<typeof schema> & { $client: Database.Database },
   logger?: ConsoleLogger
-): Promise<WeatherClientConfig> => {
+): Promise<UnitConfiguration> => {
   const config = await db.query.configurationTable.findFirst({
-    where: eq(schema.configurationTable.key, 'weatherUnits')
+    where: eq(schema.configurationTable.key, 'units')
   });
   if (!config) {
     throw new Error('Weather units configuration not found');
   }
-  return JSON.parse(config.value) as WeatherClientConfig;
+  return JSON.parse(config.value) as UnitConfiguration;
 };
 
 async function main() {
@@ -185,13 +185,12 @@ async function main() {
 
     const location = await getLocationGeocode(db, logger);
 
-    const weatherConfig = await getWeatherConfig(db, logger);
+    const unitConfig = await getUnitConfig(db, logger);
 
-    const currentConditions = await getCurrentWeather(
-      location.latitude,
-      location.longitude,
-      weatherConfig
-    );
+    const currentConditions = await getCurrentWeather(location.latitude, location.longitude, {
+      temperature_unit: unitConfig.temperature,
+      precipitation_unit: unitConfig.precipitation
+    });
     logger.info(currentConditions);
 
     const blueLinkyClient = new BlueLinky({
@@ -214,14 +213,16 @@ async function main() {
           currentConditions.temperature >= command.settings.tempAbove ||
           currentConditions.temperature <= command.settings.tempBelow
         ) {
+          const temperatureUnit = unitConfig.temperature === 'celsius' ? 'C' : 'F';
           const startResponse = await vehicle.start({
             hvac: true,
             duration: 10,
             defrost: command.settings.defrost,
             temperature: command.settings.hvacTemp,
-            unit: command.settings.tempUnits,
+            unit: temperatureUnit,
             heatedFeatures: command.settings.heatedFeatures
           });
+          logger.info(startResponse);
         }
 
         const commandUpdateResult = await db
