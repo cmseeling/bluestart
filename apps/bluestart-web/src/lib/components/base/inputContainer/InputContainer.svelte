@@ -1,13 +1,14 @@
 <script lang="ts">
-	import { css, cva } from 'styled-system/css';
+	import { cva, cx } from 'styled-system/css';
 	import type { Snippet } from 'svelte';
 
 	export type Props = {
+		class?: string;
 		hasError?: boolean;
 		children: Snippet<[]>;
 	};
 
-	let { hasError, children }: Props = $props();
+	let { hasError, children, class: className }: Props = $props();
 
 	const fieldStyle = cva({
 		base: {
@@ -25,6 +26,6 @@
 	});
 </script>
 
-<div class={fieldStyle({ error: hasError })}>
+<div class={cx(fieldStyle({ error: hasError }), className)}>
 	{@render children()}
 </div>

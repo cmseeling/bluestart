@@ -1,18 +1,27 @@
 <script lang="ts">
 	import { Switch, Label, useId, type WithoutChildrenOrChild } from 'bits-ui';
-	import { cva } from 'styled-system/css';
+	import { cva, cx } from 'styled-system/css';
 
 	let {
 		id = useId(),
 		checked = $bindable(false),
 		ref = $bindable(null),
 		label,
+		name,
+		onValue = 'true',
+		offValue = 'false',
+		class: className,
 		hasError,
 		...restProps
 	}: WithoutChildrenOrChild<Switch.RootProps> & {
 		label: string;
+		class?: string;
+		onValue?: string;
+		offValue?: string;
 		hasError?: boolean;
 	} = $props();
+
+	let value = $derived(checked ? onValue : offValue);
 
 	const containerStyle = cva({
 		base: {
@@ -101,7 +110,8 @@
 	});
 </script>
 
-<div class={containerStyle({ error: hasError })}>
+<div class={cx(containerStyle({ error: hasError }), className)}>
+	<input type="hidden" {name} {value} />
 	<Label.Root for={id}>{label}</Label.Root>
 	<Switch.Root bind:checked bind:ref {id} {...restProps} class={switchStyle({ checked })}>
 		<Switch.Thumb class={thumbStyle({ checked })} />

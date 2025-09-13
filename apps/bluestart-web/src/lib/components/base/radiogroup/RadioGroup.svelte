@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { RadioGroup, Label, type WithoutChildrenOrChild, useId } from 'bits-ui';
-	import { css, cva } from 'styled-system/css';
+	import { css, cva, cx } from 'styled-system/css';
 
 	type Item = {
 		value: string;
@@ -10,6 +10,7 @@
 
 	type Props = WithoutChildrenOrChild<RadioGroup.RootProps> & {
 		items: Item[];
+		class?: string;
 		hasError?: boolean;
 	};
 
@@ -17,6 +18,7 @@
 		value = $bindable(''),
 		ref = $bindable(null),
 		items,
+		class: className,
 		orientation,
 		hasError,
 		...restProps
@@ -55,17 +57,21 @@
 	{orientation}
 	bind:ref
 	{...restProps}
-	class={containerStyle({ orientation, hasError })}
+	class={cx(containerStyle({ orientation, hasError }), className)}
 >
 	{#each items as item, index (index)}
 		{@const id = useId()}
-		<div class={css({})}>
+		<div>
 			<RadioGroup.Item {id} value={item.value} disabled={item.disabled}>
 				{#snippet children({ checked })}
 					{#if checked}
-						<input type="radio" checked class={css({ verticalAlign: 'middle' })} />
+						<input
+							type="radio"
+							checked
+							class={css({ verticalAlign: 'middle', transform: 'scale(1.4)' })}
+						/>
 					{:else}
-						<input type="radio" class={css({ verticalAlign: 'middle' })} />
+						<input type="radio" class={css({ verticalAlign: 'middle', transform: 'scale(1.4)' })} />
 					{/if}
 				{/snippet}
 			</RadioGroup.Item>
