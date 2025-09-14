@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { applyAction, enhance } from '$app/forms';
+	import { css } from 'styled-system/css';
+	import CommandFieldset from '../CommandFieldset.svelte';
 	import Button from '$lib/components/base/button/Button.svelte';
 	import type { ActionResult } from '@sveltejs/kit';
-	import { css } from 'styled-system/css';
 	import type { PageProps } from './$types';
-	import SettingsFieldset from './SettingsFieldset.svelte';
-	import SettingsView from './SettingsView.svelte';
+	import CommandView from './CommandView.svelte';
+	import { page } from '$app/stores';
 
 	const { data, form }: PageProps = $props();
 
@@ -15,6 +16,8 @@
 
 	let showSuccessMsg = $state(false);
 	let showFailureMsg = $state(false);
+
+	showSuccessMsg = $page.url.searchParams.get('created') === 'success';
 
 	const hideStatusMessages = () => {
 		showSuccessMsg = false;
@@ -47,20 +50,12 @@
 	})}
 >
 	<div class={css({ flex: 1 })}>
-		<h2
-			class={css({
-				fontSize: { base: '2xl', md: '4xl' }
-			})}
-		>
-			Settings
+		<h2 class={css({ fontSize: { base: '2xl', md: '4xl' } })}>
+			{isEditing ? 'Edit' : 'View'} Command
 		</h2>
 		{#if isEditing}
-			<form
-				method="POST"
-				use:enhance={handleForm}
-				class={css({ borderTop: '1px solid', paddingTop: '4' })}
-			>
-				<SettingsFieldset formValues={data.formValues} errors={form?.errors} />
+			<form method="POST" use:enhance={handleForm}>
+				<CommandFieldset errors={form?.errors} />
 				<div
 					class={css({
 						display: 'flex',
@@ -68,26 +63,13 @@
 						gap: '4'
 					})}
 				>
-					<Button
-						type="button"
-						onclick={() => {
-							hideStatusMessages();
-							isEditing = false;
-						}}>Cancel</Button
-					>
 					<Button type="submit">Save</Button>
 				</div>
 			</form>
 		{:else}
 			<div class={css({ marginBottom: 4 })}>
-				<SettingsView formValues={viewData} />
+				<CommandView formValues={viewData} />
 			</div>
-			<Button
-				onclick={() => {
-					hideStatusMessages();
-					isEditing = true;
-				}}>Edit</Button
-			>
 		{/if}
 		{#if showSuccessMsg}
 			<p
@@ -100,7 +82,7 @@
 					padding: '2'
 				})}
 			>
-				Settings saved successfully!
+				Command saved successfully!
 			</p>
 		{/if}
 		{#if showFailureMsg}

@@ -1,23 +1,25 @@
 import { env } from '$env/dynamic/private';
-import { dotenvConfigSchema } from '@bluestart/shared/config';
-import { ConsoleLogger } from '@bluestart/shared/ConsoleLogger';
-import { fail, type RequestEvent } from '@sveltejs/kit';
-import { newCommandSchema } from '../validationSchema.js';
-import { randomUUID } from 'crypto';
-import type { UpsertCommand, UpsertCommandSettings } from '@bluestart/database/types.js';
 import { db } from '$lib/server/db/index.js';
 import { schema } from '@bluestart/database';
 import { CommandType } from '@bluestart/database/enums.js';
+import type { UpsertCommand, UpsertCommandSettings } from '@bluestart/database/types.js';
+import { dotenvConfigSchema } from '@bluestart/shared/config';
+import { ConsoleLogger, LogLevel } from '@bluestart/shared/ConsoleLogger';
+import { fail, redirect, type RequestEvent } from '@sveltejs/kit';
+import { randomUUID } from 'crypto';
+import { newCommandSchema } from '../validationSchema.js';
 
 const dotenvConfig = dotenvConfigSchema.parse(env);
 
 const logger = new ConsoleLogger('bluestart-web.login', dotenvConfig.logLevel);
+logger.setLogLevel(LogLevel.DEBUG);
 
 export const actions = {
 	default: async ({ request }: RequestEvent) => {
 		logger.info('handling new command form action');
-		const formData = Object.fromEntries(await request.formData());
-		const commandValues = newCommandSchema.safeParse(formData);
+		const formData = await request.formData();
+		const formValues = Object.fromEntries(formData);
+		const commandValues = newCommandSchema.safeParse(formValues);
 		logger.debug(commandValues);
 
 		if (!commandValues.success) {
@@ -37,22 +39,31 @@ export const actions = {
 			day: 1,
 			activationTime: commandValues.data.time
 		};
-		const commandResult = await db.insert(schema.commandTable).values(newCommand);
-		if (commandResult.changes === 0) {
-			console.log('Command not created. Check DB for existing entry');
-		}
 
 		const newCommandSettings: UpsertCommandSettings = {
 			commandId: newCommandId,
 			commandType: CommandType.Climate,
-			tempBelow: 25,
+			tempAbove:
+				commandValues.data.thresholdType === 'above' ? commandValues.data.externalTemp : null,
+			tempBelow:
+				commandValues.data.thresholdType === 'below' ? commandValues.data.externalTemp : null,
 			hvacTemp: commandValues.data.hvacTemp,
 			defrost: commandValues.data.defrost,
 			heatedFeatures: commandValues.data.heatedSeats
 		};
-		const settingsResult = await db.insert(schema.commandSettingsTable).values(newCommandSettings);
-		if (settingsResult.changes === 0) {
-			console.log('Command settings not created. Check DB for existing entry');
+
+		try {
+			const commandResult = await db.insert(schema.commandTable).values(newCommand);
+			const settingsResult = await db
+				.insert(schema.commandSettingsTable)
+				.values(newCommandSettings);
+
+			logger.debug('db results:', commandResult, settingsResult);
+		} catch (error) {
+			logger.error(error);
+			return fail(500, { error: { message: 'There was an error saving the command.' } });
 		}
+
+		return redirect(303, `/commands/${newCommandId}?created=success`);
 	}
 };

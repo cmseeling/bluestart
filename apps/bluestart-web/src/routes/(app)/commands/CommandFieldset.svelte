@@ -4,19 +4,12 @@
 	import InputContainer from '$lib/components/base/inputContainer/InputContainer.svelte';
 	import Switch from '$lib/components/base/switch/Switch.svelte';
 	import { css } from 'styled-system/css';
+	import type { FormData } from './FormData';
+	import RadioGroup from '$lib/components/base/radiogroup/RadioGroup.svelte';
 
 	type Props = {
 		errors?: Map<string, string>;
-		formValues?: {
-			name?: string;
-			day?: string;
-			time?: string;
-			thresholdType?: 'above' | 'below';
-			externalTemp?: number;
-			hvacTemp?: number;
-			defrost?: boolean;
-			heatedSeats?: boolean;
-		};
+		formValues?: FormData;
 	};
 
 	const { errors, formValues }: Props = $props();
@@ -24,7 +17,9 @@
 	let name = $state(formValues?.name);
 	let day = $state(formValues?.day);
 	let time = $state(formValues?.time);
-	let thresholdType = $state(formValues?.thresholdType);
+	let thresholdType = $state(
+		formValues?.thresholdType === undefined ? 'below' : formValues.thresholdType
+	);
 	let externalTemp = $state(formValues?.externalTemp);
 	let hvacTemp = $state(formValues?.hvacTemp);
 	let defrost = $state(formValues?.defrost === undefined ? false : formValues.defrost);
@@ -35,7 +30,7 @@
 	<InputContainer hasError={errors?.has('name')}>
 		<label>
 			Name:
-			<Input type="text" name="name" required hasError={errors?.has('name')} bind:value={name} />
+			<Input type="text" name="name" hasError={errors?.has('name')} bind:value={name} />
 		</label>
 		{#if errors?.has('name')}
 			<span class={css({ color: 'red.500' })}>{errors.get('name')}</span>
@@ -44,14 +39,14 @@
 	<InputContainer hasError={errors?.has('day')}>
 		<label>
 			Day:
-			<Dropdown name="day" bind:value={day} required hasError={errors?.has('day')}>
-				<option value="Sunday">Sunday</option>
-				<option value="Monday">Monday</option>
-				<option value="Tuesday">Tuesday</option>
-				<option value="Wednesday">Wednesday</option>
-				<option value="Thursday">Thursday</option>
-				<option value="Friday">Friday</option>
-				<option value="Saturday">Saturday</option>
+			<Dropdown name="day" bind:value={day} hasError={errors?.has('day')}>
+				<option value="0">Sunday</option>
+				<option value="1">Monday</option>
+				<option value="2">Tuesday</option>
+				<option value="3">Wednesday</option>
+				<option value="4">Thursday</option>
+				<option value="5">Friday</option>
+				<option value="6">Saturday</option>
 			</Dropdown>
 		</label>
 		{#if errors?.has('day')}
@@ -61,36 +56,28 @@
 	<InputContainer hasError={errors?.has('time')}>
 		<label>
 			Time:
-			<Input type="text" name="time" required hasError={errors?.has('time')} bind:value={time} />
+			<Input type="text" name="time" hasError={errors?.has('time')} bind:value={time} />
 		</label>
 		{#if errors?.has('time')}
 			<span class={css({ color: 'red.500' })}>{errors.get('time')}</span>
 		{/if}
 	</InputContainer>
-	<InputContainer hasError={errors?.has('thresholdType')}>
-		<label>
-			Threshold Type:
-			<Dropdown
-				name="thresholdType"
-				bind:value={thresholdType}
-				required
-				hasError={errors?.has('thresholdType')}
-			>
-				<option value="above">Above</option>
-				<option value="below">Below</option>
-			</Dropdown>
-		</label>
-		{#if errors?.has('thresholdType')}
-			<span class={css({ color: 'red.500' })}>{errors.get('thresholdType')}</span>
-		{/if}
-	</InputContainer>
 	<InputContainer hasError={errors?.has('externalTemp')}>
 		<label>
-			Temperature:
+			Outside Temperature:
+			<RadioGroup
+				bind:value={thresholdType}
+				orientation="horizontal"
+				class={css({ marginY: 1 })}
+				items={[
+					{ value: 'above', label: 'Above' },
+					{ value: 'below', label: 'Below' }
+				]}
+				hasError={errors?.has('thresholdType')}
+			/>
 			<Input
 				type="number"
 				name="externalTemp"
-				required
 				hasError={errors?.has('externalTemp')}
 				bind:value={externalTemp}
 			/>
@@ -105,7 +92,6 @@
 			<Input
 				type="number"
 				name="hvacTemp"
-				required
 				hasError={errors?.has('hvacTemp')}
 				bind:value={hvacTemp}
 			/>
@@ -115,7 +101,12 @@
 		{/if}
 	</InputContainer>
 	<InputContainer hasError={errors?.has('defrost')}>
-		<Switch bind:checked={defrost} label="Defrost: " hasError={errors?.has('defrost')} />
+		<Switch
+			bind:checked={defrost}
+			name="defrost"
+			label="Defrost: "
+			hasError={errors?.has('defrost')}
+		/>
 		{#if errors?.has('defrost')}
 			<span class={css({ color: 'red.500' })}>{errors.get('defrost')}</span>
 		{/if}
@@ -123,6 +114,7 @@
 	<InputContainer hasError={errors?.has('heatedSeats')}>
 		<Switch
 			bind:checked={heatedSeats}
+			name="heatedSeats"
 			label="Heated Seats: "
 			hasError={errors?.has('heatedSeats')}
 		/>
