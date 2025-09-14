@@ -63,25 +63,25 @@
 		{/if}
 	</InputContainer>
 	<InputContainer hasError={errors?.has('externalTemp')}>
-		<label>
-			Outside Temperature:
-			<RadioGroup
+		<label for="externalTemp"> Outside Temperature: </label>
+		<div class={css({ display: 'flex', flexDirection: 'row', gap: 2 })}>
+			<Dropdown
+				name="thresholdType"
 				bind:value={thresholdType}
-				orientation="horizontal"
-				class={css({ marginY: 1 })}
-				items={[
-					{ value: 'above', label: 'Above' },
-					{ value: 'below', label: 'Below' }
-				]}
-				hasError={errors?.has('thresholdType')}
-			/>
+				class={css({ flexShrink: 1, width: '6rem' })}
+			>
+				<option value="above">Above</option>
+				<option value="below">Below</option>
+			</Dropdown>
 			<Input
 				type="number"
 				name="externalTemp"
+				id="externalTemp"
 				hasError={errors?.has('externalTemp')}
+				class={css({ flexGrow: 1 })}
 				bind:value={externalTemp}
 			/>
-		</label>
+		</div>
 		{#if errors?.has('externalTemp')}
 			<span class={css({ color: 'red.500' })}>{errors.get('externalTemp')}</span>
 		{/if}
