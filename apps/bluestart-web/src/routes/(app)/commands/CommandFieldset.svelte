@@ -5,7 +5,6 @@
 	import Switch from '$lib/components/base/switch/Switch.svelte';
 	import { css } from 'styled-system/css';
 	import type { FormData } from './FormData';
-	import RadioGroup from '$lib/components/base/radiogroup/RadioGroup.svelte';
 
 	type Props = {
 		errors?: Map<string, string>;
@@ -15,7 +14,7 @@
 	const { errors, formValues }: Props = $props();
 
 	let name = $state(formValues?.name);
-	let day = $state(formValues?.day);
+	let day = $state(formValues?.day?.toString());
 	let time = $state(formValues?.time);
 	let thresholdType = $state(
 		formValues?.thresholdType === undefined ? 'below' : formValues.thresholdType

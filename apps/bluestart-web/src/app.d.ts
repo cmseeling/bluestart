@@ -10,7 +10,10 @@ declare global {
 			session: Session | null;
 		}
 		// interface PageData {}
-		// interface PageState {}
+		interface PageState {
+			showSuccessMsg?: boolean;
+			showFailureMsg?: boolean;
+		}
 		// interface Platform {}
 	}
 }

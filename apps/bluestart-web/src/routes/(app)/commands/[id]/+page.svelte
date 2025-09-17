@@ -6,7 +6,8 @@
 	import type { ActionResult } from '@sveltejs/kit';
 	import type { PageProps } from './$types';
 	import CommandView from './CommandView.svelte';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
+	import { replaceState } from '$app/navigation';
 
 	const { data, form }: PageProps = $props();
 
@@ -14,10 +15,10 @@
 
 	let isEditing = $state(false);
 
-	let showSuccessMsg = $state(false);
-	let showFailureMsg = $state(false);
+	let showSuccessMsg = $state(page.state.showSuccessMsg || false);
+	let showFailureMsg = $state(page.state.showSuccessMsg || false);
 
-	showSuccessMsg = $page.url.searchParams.get('created') === 'success';
+	showSuccessMsg = page.url.searchParams.get('created') === 'success';
 
 	const hideStatusMessages = () => {
 		showSuccessMsg = false;
@@ -25,6 +26,13 @@
 	};
 
 	let errorMessage = $state('Failed to save settings.');
+
+	const handleEditClicked = () => {
+		page.url.searchParams.delete('created');
+		replaceState(page.url.href, { showSuccessMsg: false });
+		hideStatusMessages();
+		isEditing = true;
+	};
 
 	const handleForm = () => {
 		return async ({ result }: { result: ActionResult }) => {
@@ -55,7 +63,8 @@
 		</h2>
 		{#if isEditing}
 			<form method="POST" use:enhance={handleForm}>
-				<CommandFieldset errors={form?.errors} />
+				<input type="hidden" name="id" value={data.formValues.id} />
+				<CommandFieldset formValues={data.formValues} errors={form?.errors} />
 				<div
 					class={css({
 						display: 'flex',
@@ -63,6 +72,13 @@
 						gap: '4'
 					})}
 				>
+					<Button
+						type="button"
+						onclick={() => {
+							hideStatusMessages();
+							isEditing = false;
+						}}>Cancel</Button
+					>
 					<Button type="submit">Save</Button>
 				</div>
 			</form>
@@ -70,6 +86,7 @@
 			<div class={css({ marginBottom: 4 })}>
 				<CommandView formValues={viewData} />
 			</div>
+			<Button onclick={handleEditClicked}>Edit</Button>
 		{/if}
 		{#if showSuccessMsg}
 			<p

@@ -31,5 +31,5 @@ export const newCommandSchema = z.object({
 });
 
 export const updateCommandSchema = newCommandSchema.extend({
-	id: z.uuid()
+	id: z.string().min(1, 'ID is required.')
 });

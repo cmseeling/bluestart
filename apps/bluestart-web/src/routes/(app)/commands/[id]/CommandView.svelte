@@ -10,7 +10,7 @@
 	const { formValues }: Props = $props();
 
 	let name = formValues.name;
-	let day = formValues.day;
+	let day = formValues.day ?? 0;
 	let time = formValues.time;
 	let thresholdType = formValues.thresholdType;
 	let externalTemp = formValues.externalTemp;
@@ -86,7 +86,7 @@
 		})}
 	>
 		<div>Defrost:</div>
-		<div class={css({ fontWeight: 'bold' })}>{defrost}</div>
+		<div class={css({ fontWeight: 'bold' })}>{defrost ? 'Yes' : 'No'}</div>
 	</div>
 
 	<div
@@ -97,6 +97,6 @@
 		})}
 	>
 		<div>Heated Seats:</div>
-		<div class={css({ fontWeight: 'bold' })}>{heatedSeats}</div>
+		<div class={css({ fontWeight: 'bold' })}>{heatedSeats ? 'Yes' : 'No'}</div>
 	</div>
 </div>

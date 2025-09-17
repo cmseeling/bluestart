@@ -2,8 +2,7 @@ import { env } from '$env/dynamic/private';
 import { dotenvConfigSchema } from '@bluestart/shared/config';
 import { ConsoleLogger, LogLevel } from '@bluestart/shared/ConsoleLogger';
 import { fail, type RequestEvent } from '@sveltejs/kit';
-import { newCommandSchema } from '../validationSchema.js';
-import { randomUUID } from 'crypto';
+import { updateCommandSchema } from '../validationSchema.js';
 import type { UpsertCommand, UpsertCommandSettings } from '@bluestart/database/types.js';
 import { db } from '$lib/server/db/index.js';
 import { eq, schema } from '@bluestart/database';
@@ -31,9 +30,9 @@ export const load: PageServerLoad = async ({ params }) => {
 		day: command?.day,
 		time: command?.activationTime,
 		thresholdType:
-			command?.settings?.tempAbove !== null || command?.settings?.tempAbove !== undefined
-				? 'above'
-				: 'below',
+			command?.settings?.tempAbove === null || command?.settings?.tempAbove === undefined
+				? 'below'
+				: 'above',
 		externalTemp: command?.settings?.tempAbove ?? command?.settings?.tempBelow ?? 0,
 		hvacTemp: command?.settings?.hvacTemp,
 		defrost: command?.settings?.defrost || false,
@@ -45,17 +44,12 @@ export const load: PageServerLoad = async ({ params }) => {
 
 export const actions = {
 	default: async ({ request }: RequestEvent) => {
-		logger.info('handling new command form action');
+		logger.info('handling edit command form action');
 		const formData = await request.formData();
+		logger.debug(formData);
 		const formValues = Object.fromEntries(formData);
-		const commandValues = newCommandSchema.safeParse(formValues);
-		// logger.debug(commandValues);
-		// logger.debug(formData);
-		// logger.debug(formData.get('day'));
-		// logger.debug(formData.get('thresholdType'));
-		// logger.debug(formData.get('hvacTemp'));
-		// logger.debug(formData.get('defrost'));
-		// logger.debug(formData.get('heatedSeats'));
+		const commandValues = updateCommandSchema.safeParse(formValues);
+		logger.debug(commandValues);
 
 		if (!commandValues.success) {
 			const errors: Map<string, string> = commandValues.error.issues.reduce((acc, error) => {
@@ -67,51 +61,41 @@ export const actions = {
 			return fail(400, { errors });
 		}
 
-		const newCommandId = randomUUID();
-		const newCommand: UpsertCommand = {
-			id: newCommandId,
+		const editCommand: UpsertCommand = {
+			id: commandValues.data.id,
 			name: commandValues.data.name,
 			day: 1,
 			activationTime: commandValues.data.time
 		};
-		// const commandResult = await db.insert(schema.commandTable).values(newCommand);
-		// if (commandResult.changes === 0) {
-		// 	console.log('Command not created. Check DB for existing entry');
-		// }
 
-		const newCommandSettings: UpsertCommandSettings = {
-			commandId: newCommandId,
+		const editCommandSettings: UpsertCommandSettings = {
+			commandId: commandValues.data.id,
 			commandType: CommandType.Climate,
-			tempBelow: 25,
+			tempAbove:
+				commandValues.data.thresholdType === 'above' ? commandValues.data.externalTemp : null,
+			tempBelow:
+				commandValues.data.thresholdType === 'below' ? commandValues.data.externalTemp : null,
 			hvacTemp: commandValues.data.hvacTemp,
 			defrost: commandValues.data.defrost,
 			heatedFeatures: commandValues.data.heatedSeats
 		};
-		// const settingsResult = await db.insert(schema.commandSettingsTable).values(newCommandSettings);
-		// if (settingsResult.changes === 0) {
-		// 	console.log('Command settings not created. Check DB for existing entry');
-		// }
 
-		const rowsUpdated: number = await db.transaction(async (tx) => {
-			const commandResult = await tx.insert(schema.commandTable).values(newCommand);
-			const settingsResult = await tx
-				.insert(schema.commandSettingsTable)
-				.values(newCommandSettings);
+		try {
+			const commandResult = await db
+				.update(schema.commandTable)
+				.set(editCommand)
+				.where(eq(schema.commandTable.id, commandValues.data.id));
+			const settingsResult = await db
+				.update(schema.commandSettingsTable)
+				.set(editCommandSettings)
+				.where(eq(schema.commandSettingsTable.commandId, commandValues.data.id));
 
-			return commandResult.changes + settingsResult.changes;
-		});
-		logger.debug(rowsUpdated);
+			logger.debug('db results:', commandResult, settingsResult);
+		} catch (error) {
+			logger.error(error);
+			return fail(500, { error: { message: 'There was an error saving the command.' } });
+		}
 
-		const returnFormValues: FormData = {
-			id: newCommandId,
-			name: commandValues.data.name,
-			day: commandValues.data.day === null ? undefined : commandValues.data.day,
-			time: commandValues.data.time,
-			hvacTemp: commandValues.data.hvacTemp,
-			defrost: commandValues.data.defrost,
-			heatedSeats: commandValues.data.heatedSeats
-		};
-
-		return { success: true, formValues: returnFormValues };
+		return { success: true, formValues };
 	}
 };
