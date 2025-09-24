@@ -29,7 +29,7 @@
 	<InputContainer hasError={errors?.has('name')}>
 		<label>
 			Name:
-			<Input type="text" name="name" hasError={errors?.has('name')} bind:value={name} />
+			<Input type="text" name="name" required hasError={errors?.has('name')} bind:value={name} />
 		</label>
 		{#if errors?.has('name')}
 			<span class={css({ color: 'red.500' })}>{errors.get('name')}</span>
@@ -38,7 +38,7 @@
 	<InputContainer hasError={errors?.has('day')}>
 		<label>
 			Day:
-			<Dropdown name="day" bind:value={day} hasError={errors?.has('day')}>
+			<Dropdown name="day" required bind:value={day} hasError={errors?.has('day')}>
 				<option value="0">Sunday</option>
 				<option value="1">Monday</option>
 				<option value="2">Tuesday</option>
@@ -55,17 +55,18 @@
 	<InputContainer hasError={errors?.has('time')}>
 		<label>
 			Time:
-			<Input type="text" name="time" hasError={errors?.has('time')} bind:value={time} />
+			<Input type="text" name="time" required hasError={errors?.has('time')} bind:value={time} />
 		</label>
 		{#if errors?.has('time')}
 			<span class={css({ color: 'red.500' })}>{errors.get('time')}</span>
 		{/if}
 	</InputContainer>
 	<InputContainer hasError={errors?.has('externalTemp')}>
-		<label for="externalTemp"> Outside Temperature: </label>
+		<label for="externalTemp">Outside Temperature:</label>
 		<div class={css({ display: 'flex', flexDirection: 'row', gap: 2 })}>
 			<Dropdown
 				name="thresholdType"
+				required
 				bind:value={thresholdType}
 				class={css({ flexShrink: 1, width: '6rem' })}
 			>
@@ -76,6 +77,7 @@
 				type="number"
 				name="externalTemp"
 				id="externalTemp"
+				required
 				hasError={errors?.has('externalTemp')}
 				class={css({ flexGrow: 1 })}
 				bind:value={externalTemp}
@@ -91,6 +93,7 @@
 			<Input
 				type="number"
 				name="hvacTemp"
+				required
 				hasError={errors?.has('hvacTemp')}
 				bind:value={hvacTemp}
 			/>
