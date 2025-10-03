@@ -1,19 +1,19 @@
 import { env } from '$env/dynamic/private';
-import { dotenvConfigSchema } from '@bluestart/shared/config';
-import { ConsoleLogger, LogLevel } from '@bluestart/shared/ConsoleLogger';
-import { fail, type RequestEvent } from '@sveltejs/kit';
-import { updateCommandSchema } from '../validationSchema.js';
-import type { UpsertCommand, UpsertCommandSettings } from '@bluestart/database/types.js';
 import { db } from '$lib/server/db/index.js';
 import { eq, schema } from '@bluestart/database';
 import { CommandType } from '@bluestart/database/enums.js';
+import type { UpsertCommand, UpsertCommandSettings } from '@bluestart/database/types.js';
+import { dotenvConfigSchema } from '@bluestart/shared/config';
+import { ConsoleLogger, LogLevel } from '@bluestart/shared/ConsoleLogger';
+import { fail, type RequestEvent } from '@sveltejs/kit';
 import type { FormData } from '../FormData.js';
+import { updateCommandSchema } from '../validationSchema.js';
 import type { PageServerLoad } from './$types.js';
 
 const dotenvConfig = dotenvConfigSchema.parse(env);
 
 const logger = new ConsoleLogger('bluestart-web.login', dotenvConfig.logLevel);
-logger.setLogLevel(LogLevel.DEBUG);
+// logger.setLogLevel(LogLevel.DEBUG);
 
 export const load: PageServerLoad = async ({ params }) => {
 	const command = await db.query.commandTable.findFirst({

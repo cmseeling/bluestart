@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { applyAction, enhance } from '$app/forms';
-	import { css } from 'styled-system/css';
-	import CommandFieldset from '../CommandFieldset.svelte';
 	import Button from '$lib/components/base/button/Button.svelte';
+	import CommandFieldset from '../CommandFieldset.svelte';
+	import CommandView from './CommandView.svelte';
 	import type { ActionResult } from '@sveltejs/kit';
 	import type { PageProps } from './$types';
-	import CommandView from './CommandView.svelte';
+	import { applyAction, enhance } from '$app/forms';
+	import { css } from 'styled-system/css';
 	import { page } from '$app/state';
 	import { replaceState } from '$app/navigation';
 

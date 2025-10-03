@@ -95,9 +95,17 @@
 			]
 		]
 	]);
+
+	const fetchData = async () => {
+		const response = await fetch('/api/forecast');
+		const data = await response.json();
+		console.log(data);
+	};
 </script>
 
 <h1 class={css({ fontSize: 'lg', fontWeight: 'bold' })}>Welcome to SvelteKit</h1>
 <p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
 
 <Schedule {days} />
+
+<button on:click={fetchData}>Fetch from api</button>
