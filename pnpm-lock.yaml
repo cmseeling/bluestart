@@ -108,6 +108,9 @@ importers:
       bluelinky:
         specifier: ^10.0.0
         version: 10.0.0
+      ky:
+        specifier: ^1.8.2
+        version: 1.8.2
       zod:
         specifier: ^4.0.15
         version: 4.0.15
