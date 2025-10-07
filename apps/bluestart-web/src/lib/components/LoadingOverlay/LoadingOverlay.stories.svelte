@@ -9,3 +9,9 @@
 </script>
 
 <Story name="Default"></Story>
+
+<Story name="With Children">
+	<LoadingOverlay>
+		<p>This is a child element.</p>
+	</LoadingOverlay>
+</Story>

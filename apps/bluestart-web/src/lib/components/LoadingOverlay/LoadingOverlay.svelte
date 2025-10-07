@@ -25,16 +25,18 @@
 {#if showOverlay}
 	<div
 		class={css({
+			position: 'absolute',
 			top: '0',
 			left: '0',
 			display: 'flex',
 			alignItems: 'center',
+			justifyContent: 'center',
 			height: '100vh',
 			width: 'full',
 			backgroundColor: 'surface0',
+			opacity: '0.7',
 			zIndex: '1000'
 		})}
-		style="position: absolute; justify-content: center; opacity: 0.7;"
 	>
 		<CircleSpinner />
 	</div>
