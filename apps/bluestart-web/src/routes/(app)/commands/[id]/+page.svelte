@@ -8,10 +8,33 @@
 	import { css } from 'styled-system/css';
 	import { page } from '$app/state';
 	import { replaceState } from '$app/navigation';
+	import Switch from '$lib/components/base/switch/Switch.svelte';
+	import ky from 'ky';
+	import { getContext } from 'svelte';
+	import type { LoadingOverlayContext } from '$lib';
 
 	const { data, form }: PageProps = $props();
 
+	const overlayContext: LoadingOverlayContext = getContext(
+		'loadingOverlay'
+	) as LoadingOverlayContext;
+	const overlayOn = overlayContext.toggleOverlay;
+	const overlayOff = overlayContext.toggleOverlay;
+
 	let viewData = $state(data.formValues);
+	let enabled = $state(data.enabled);
+	const getEnabled = () => enabled;
+	const setEnabled = (value: boolean) => {
+		overlayOn();
+		console.log('switch clicked');
+		// console.log(page.params.id);
+		enabled = value;
+		const result = ky.put(`/api/commands/${page.params.id}/setEnabled`, {
+			json: { enabled }
+		});
+		console.log(result);
+		overlayOff();
+	};
 
 	let isEditing = $state(false);
 
@@ -58,9 +81,12 @@
 	})}
 >
 	<div class={css({ flex: 1 })}>
-		<h2 class={css({ fontSize: { base: '2xl', md: '4xl' } })}>
-			{isEditing ? 'Edit' : 'View'} Command
-		</h2>
+		<div class={css({ display: 'flex', alignItems: 'center', justifyContent: 'space-between' })}>
+			<h2 class={css({ fontSize: { base: '2xl', md: '4xl' } })}>
+				{isEditing ? 'Edit' : 'View'} Command
+			</h2>
+			<Switch bind:checked={getEnabled, setEnabled} name="defrost" label="Enabled: " />
+		</div>
 		{#if isEditing}
 			<form method="POST" use:enhance={handleForm}>
 				<input type="hidden" name="id" value={data.formValues.id} />

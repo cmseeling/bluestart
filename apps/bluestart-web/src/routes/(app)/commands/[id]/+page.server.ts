@@ -4,7 +4,10 @@ import { eq, schema } from '@bluestart/database';
 import { CommandType } from '@bluestart/database/enums.js';
 import type { UpsertCommand, UpsertCommandSettings } from '@bluestart/database/types.js';
 import { dotenvConfigSchema } from '@bluestart/shared/config';
-import { ConsoleLogger, LogLevel } from '@bluestart/shared/ConsoleLogger';
+import {
+	ConsoleLogger
+	// LogLevel
+} from '@bluestart/shared/ConsoleLogger';
 import { fail, type RequestEvent } from '@sveltejs/kit';
 import type { FormData } from '../FormData.js';
 import { updateCommandSchema } from '../validationSchema.js';
@@ -39,7 +42,7 @@ export const load: PageServerLoad = async ({ params }) => {
 		heatedSeats: command?.settings?.heatedFeatures || false
 	};
 
-	return { formValues };
+	return { formValues, enabled: !(command?.isDisabled || false) };
 };
 
 export const actions = {
