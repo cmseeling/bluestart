@@ -18,8 +18,8 @@
 	const overlayContext: LoadingOverlayContext = getContext(
 		'loadingOverlay'
 	) as LoadingOverlayContext;
-	const overlayOn = overlayContext.toggleOverlay;
-	const overlayOff = overlayContext.toggleOverlay;
+	const overlayOn = overlayContext.overlayOn;
+	const overlayOff = overlayContext.overlayOff;
 
 	let viewData = $state(data.formValues);
 	let enabled = $state(data.enabled);
