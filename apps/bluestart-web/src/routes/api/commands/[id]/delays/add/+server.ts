@@ -10,7 +10,7 @@ import { z } from 'zod';
 
 const dotenvConfig = dotenvConfigSchema.parse(env);
 
-const logger = new ConsoleLogger('bluestart-web.login', dotenvConfig.logLevel);
+const logger = new ConsoleLogger('bluestart-web.api.commands.delays.add', dotenvConfig.logLevel);
 // logger.setLogLevel(LogLevel.DEBUG);
 
 const zNumber = z

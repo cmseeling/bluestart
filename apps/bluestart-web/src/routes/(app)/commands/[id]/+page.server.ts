@@ -15,7 +15,7 @@ import type { PageServerLoad } from './$types.js';
 
 const dotenvConfig = dotenvConfigSchema.parse(env);
 
-const logger = new ConsoleLogger('bluestart-web.login', dotenvConfig.logLevel);
+const logger = new ConsoleLogger('bluestart-web.commands.id', dotenvConfig.logLevel);
 // logger.setLogLevel(LogLevel.DEBUG);
 
 export const load: PageServerLoad = async ({ params }) => {

@@ -7,7 +7,7 @@ import { error, json, type RequestHandler } from '@sveltejs/kit';
 
 const dotenvConfig = dotenvConfigSchema.parse(env);
 
-const logger = new ConsoleLogger('bluestart-web.login', dotenvConfig.logLevel);
+const logger = new ConsoleLogger('bluestart-web.api.commands.delays.cancel', dotenvConfig.logLevel);
 // logger.setLogLevel(LogLevel.DEBUG);
 
 export const DELETE: RequestHandler = async ({ params }) => {

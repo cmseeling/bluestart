@@ -11,7 +11,7 @@ import { newCommandSchema } from '../validationSchema.js';
 
 const dotenvConfig = dotenvConfigSchema.parse(env);
 
-const logger = new ConsoleLogger('bluestart-web.login', dotenvConfig.logLevel);
+const logger = new ConsoleLogger('bluestart-web.commands.new', dotenvConfig.logLevel);
 logger.setLogLevel(LogLevel.DEBUG);
 
 export const actions = {
