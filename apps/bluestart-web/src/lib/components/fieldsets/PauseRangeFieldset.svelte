@@ -3,32 +3,70 @@
 	import CalendarBlank from 'phosphor-svelte/lib/CalendarBlank';
 	import CaretLeft from 'phosphor-svelte/lib/CaretLeft';
 	import CaretRight from 'phosphor-svelte/lib/CaretRight';
+	import { css } from 'styled-system/css';
 </script>
 
 <DateRangePicker.Root
 	weekdayFormat="short"
 	fixedWeeks={true}
-	class="flex w-full max-w-[340px] flex-col gap-1.5"
+	class={css({
+		display: 'flex',
+		width: '100%',
+		maxWidth: '340px',
+		flexDirection: 'column',
+		gap: '0.375rem'
+	})}
 >
 	<DateRangePicker.Label class="block select-none text-sm font-medium"
 		>Rental Days</DateRangePicker.Label
 	>
 	<div
-		class="h-input rounded-input border-border-input bg-background text-foreground focus-within:border-border-input-hover focus-within:shadow-date-field-focus hover:border-border-input-hover flex w-full select-none items-center border px-2 py-3 text-sm tracking-[0.01em]"
+		class={css({
+			display: 'flex',
+			width: '100%',
+			alignItems: 'center',
+			userSelect: 'none',
+			paddingX: '0.5rem',
+			paddingY: '0.75rem',
+			fontSize: '0.875rem',
+			letterSpacing: '0.01em',
+			borderWidth: '1px',
+			borderStyle: 'solid',
+			borderColor: 'var(--border-input)',
+			borderRadius: '6px',
+			bg: 'var(--background)',
+			color: 'var(--foreground)',
+			'&:hover': { borderColor: 'var(--border-input-hover)' },
+			'&:focus-within': {
+				borderColor: 'var(--border-input-hover)',
+				boxShadow: 'var(--shadow-date-field-focus)'
+			}
+		})}
 	>
 		{#each ['start', 'end'] as const as type (type)}
 			<DateRangePicker.Input {type}>
 				{#snippet children({ segments })}
 					{#each segments as { part, value }, i (part + i)}
-						<div class="inline-block select-none">
+						<div class={css({ display: 'inline-block', userSelect: 'none' })}>
 							{#if part === 'literal'}
-								<DateRangePicker.Segment {part} class="text-muted-foreground p-1">
+								<DateRangePicker.Segment
+									{part}
+									class={css({ color: 'var(--muted-foreground)', padding: '0.25rem' })}
+								>
 									{value}
 								</DateRangePicker.Segment>
 							{:else}
 								<DateRangePicker.Segment
 									{part}
-									class="rounded-5px hover:bg-muted focus:bg-muted focus:text-foreground aria-[valuetext=Empty]:text-muted-foreground focus-visible:ring-0! focus-visible:ring-offset-0! px-1 py-1"
+									class={css({
+										borderRadius: '5px',
+										paddingX: '0.25rem',
+										paddingY: '0.25rem',
+										'&:hover': { backgroundColor: 'var(--muted)' },
+										'&:focus': { backgroundColor: 'var(--muted)', color: 'var(--foreground)' },
+										'[aria-valuetext="Empty"]': { color: 'var(--muted-foreground)' },
+										':focus-visible': { boxShadow: 'none', outline: 'none' }
+									})}
 								>
 									{value}
 								</DateRangePicker.Segment>
@@ -38,42 +76,120 @@
 				{/snippet}
 			</DateRangePicker.Input>
 			{#if type === 'start'}
-				<div aria-hidden="true" class="text-muted-foreground px-1">–⁠⁠⁠⁠⁠</div>
+				<div
+					aria-hidden="true"
+					class={css({ color: 'var(--muted-foreground)', paddingX: '0.25rem' })}
+				>
+					–⁠⁠⁠⁠⁠
+				</div>
 			{/if}
 		{/each}
 
 		<DateRangePicker.Trigger
-			class="text-foreground/60 hover:bg-muted active:bg-dark-10 ml-auto inline-flex size-8 items-center justify-center rounded-[5px] transition-all"
+			class={css({
+				color: 'var(--foreground)',
+				opacity: 0.6,
+				'&:hover': { backgroundColor: 'var(--muted)' },
+				'&:active': { backgroundColor: 'var(--dark-10)' },
+				marginLeft: 'auto',
+				display: 'inline-flex',
+				width: '2rem',
+				height: '2rem',
+				alignItems: 'center',
+				justifyContent: 'center',
+				borderRadius: '5px',
+				transition: 'all 150ms ease'
+			})}
 		>
-			<CalendarBlank class="size-6" />
+			<CalendarBlank class={css({ width: '1.5rem', height: '1.5rem' })} />
 		</DateRangePicker.Trigger>
 	</div>
-	<DateRangePicker.Content sideOffset={6} class="z-50">
+	<DateRangePicker.Content sideOffset={6} class={css({ zIndex: 50 })}>
 		<DateRangePicker.Calendar
-			class="rounded-15px border-dark-10 bg-background-alt shadow-popover mt-6 border p-[22px]"
+			class={css({
+				borderRadius: '15px',
+				borderColor: 'var(--dark-10)',
+				background: 'var(--background-alt)',
+				boxShadow: 'var(--shadow-popover)',
+				marginTop: '1.5rem',
+				borderWidth: '1px',
+				padding: '22px'
+			})}
 		>
 			{#snippet children({ months, weekdays })}
-				<DateRangePicker.Header class="flex items-center justify-between">
+				<DateRangePicker.Header
+					class={css({ display: 'flex', alignItems: 'center', justifyContent: 'space-between' })}
+				>
 					<DateRangePicker.PrevButton
-						class="rounded-9px bg-background-alt hover:bg-muted inline-flex size-10 items-center justify-center transition-all active:scale-[0.98]"
+						class={css({
+							borderRadius: '9px',
+							background: 'var(--background-alt)',
+							'&:hover': { backgroundColor: 'var(--muted)' },
+							display: 'inline-flex',
+							width: '2.5rem',
+							height: '2.5rem',
+							alignItems: 'center',
+							justifyContent: 'center',
+							transition: 'all 150ms ease',
+							'&:active': { transform: 'scale(0.98)' }
+						})}
 					>
-						<CaretLeft class="size-6" />
+						<CaretLeft class={css({ width: '1.5rem', height: '1.5rem' })} />
 					</DateRangePicker.PrevButton>
-					<DateRangePicker.Heading class="text-[15px] font-medium" />
+					<DateRangePicker.Heading class={css({ fontSize: '15px', fontWeight: 500 })} />
 					<DateRangePicker.NextButton
-						class="rounded-9px bg-background-alt hover:bg-muted inline-flex size-10 items-center justify-center transition-all active:scale-[0.98]"
+						class={css({
+							borderRadius: '9px',
+							background: 'var(--background-alt)',
+							'&:hover': { backgroundColor: 'var(--muted)' },
+							display: 'inline-flex',
+							width: '2.5rem',
+							height: '2.5rem',
+							alignItems: 'center',
+							justifyContent: 'center',
+							transition: 'all 150ms ease',
+							'&:active': { transform: 'scale(0.98)' }
+						})}
 					>
-						<CaretRight class="size-6" />
+						<CaretRight class={css({ width: '1.5rem', height: '1.5rem' })} />
 					</DateRangePicker.NextButton>
 				</DateRangePicker.Header>
-				<div class="flex flex-col space-y-4 pt-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+				<div
+					class={css({
+						display: 'flex',
+						flexDirection: 'column',
+						gap: '1rem',
+						paddingTop: '1rem',
+						'@media(min-width:640px)': { flexDirection: 'row', gap: '1rem' }
+					})}
+				>
 					{#each months as month (month.value)}
-						<DateRangePicker.Grid class="w-full border-collapse select-none space-y-1">
+						<DateRangePicker.Grid
+							class={css({
+								width: '100%',
+								borderCollapse: 'collapse',
+								userSelect: 'none',
+								gap: '0.25rem'
+							})}
+						>
 							<DateRangePicker.GridHead>
-								<DateRangePicker.GridRow class="mb-1 flex w-full justify-between">
+								<DateRangePicker.GridRow
+									class={css({
+										marginBottom: '0.25rem',
+										display: 'flex',
+										width: '100%',
+										justifyContent: 'space-between'
+									})}
+								>
 									{#each weekdays as day (day)}
 										<DateRangePicker.HeadCell
-											class="text-muted-foreground font-normal! w-10 rounded-md text-xs"
+											class={css({
+												color: 'var(--muted-foreground)',
+												fontWeight: 400,
+												width: '2.5rem',
+												borderRadius: '6px',
+												fontSize: '0.75rem'
+											})}
 										>
 											<div>{day.slice(0, 2)}</div>
 										</DateRangePicker.HeadCell>
@@ -82,18 +198,54 @@
 							</DateRangePicker.GridHead>
 							<DateRangePicker.GridBody>
 								{#each month.weeks as weekDates (weekDates)}
-									<DateRangePicker.GridRow class="flex w-full">
+									<DateRangePicker.GridRow class={css({ display: 'flex', width: '100%' })}>
 										{#each weekDates as date (date)}
 											<DateRangePicker.Cell
 												{date}
 												month={month.value}
-												class="p-0! relative m-0 size-10 overflow-visible text-center text-sm focus-within:relative focus-within:z-20"
+												class={css({
+													padding: 0,
+													position: 'relative',
+													margin: 0,
+													width: '2.5rem',
+													overflow: 'visible',
+													textAlign: 'center',
+													fontSize: '0.875rem'
+												})}
 											>
 												<DateRangePicker.Day
-													class="rounded-9px text-foreground hover:border-foreground focus-visible:ring-foreground! data-selection-end:rounded-9px data-selection-start:rounded-9px data-highlighted:bg-muted data-selected:bg-muted data-selection-end:bg-foreground data-selection-start:bg-foreground data-disabled:text-foreground/30 data-selected:text-foreground data-selection-end:text-background data-selection-start:text-background data-unavailable:text-muted-foreground data-selected:[&:not([data-selection-start])]:[&:not([data-selection-end])]:focus-visible:border-foreground data-disabled:pointer-events-none data-highlighted:rounded-none  data-outside-month:pointer-events-none data-selected:font-medium data-selection-end:font-medium data-selection-start:font-medium data-selection-start:focus-visible:ring-2 data-selection-start:focus-visible:ring-offset-2! data-unavailable:line-through data-selected:[&:not([data-selection-start])]:[&:not([data-selection-end])]:rounded-none data-selected:[&:not([data-selection-start])]:[&:not([data-selection-end])]:focus-visible:ring-0! data-selected:[&:not([data-selection-start])]:[&:not([data-selection-end])]:focus-visible:ring-offset-0! group relative inline-flex size-10 items-center justify-center overflow-visible whitespace-nowrap border border-transparent bg-transparent p-0 text-sm font-normal transition-all"
+													class={css({
+														borderRadius: '9px',
+														color: 'var(--foreground)',
+														background: 'transparent',
+														borderColor: 'transparent',
+														display: 'inline-flex',
+														alignItems: 'center',
+														justifyContent: 'center',
+														width: '2.5rem',
+														height: '2.5rem',
+														padding: 0,
+														fontSize: '0.875rem',
+														transition: 'all 120ms ease',
+														'&:hover': { borderColor: 'var(--foreground)' },
+														'&[data-disabled]': {
+															color: 'var(--foreground)',
+															opacity: 0.3,
+															pointerEvents: 'none'
+														}
+													})}
 												>
 													<div
-														class="bg-foreground group-data-selected:bg-background group-data-today:block absolute top-[5px] hidden size-1 rounded-full transition-all"
+														class={css({
+															background: 'var(--foreground)',
+															position: 'absolute',
+															top: '5px',
+															display: 'none',
+															width: '0.25rem',
+															height: '0.25rem',
+															borderRadius: '50%',
+															transition: 'all 120ms ease'
+														})}
 													></div>
 													{date.day}
 												</DateRangePicker.Day>
