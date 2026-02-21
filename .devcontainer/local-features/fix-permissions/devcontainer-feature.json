@@ -1,0 +1,15 @@
+{
+  "id": "fix-permissions",
+  "name": "Fix Permissions",
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils",
+    "ghcr.io/devcontainers/features/rust:1"
+  ],
+  "options": {
+    "user": {
+      "type": "string",
+      "description": "The user to fix permissions for",
+      "default": "vscode"
+    }
+  }
+}

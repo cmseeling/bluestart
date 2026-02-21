@@ -1,0 +1,12 @@
+{
+  "id": "use-delta",
+  "name": "Use delta for git diff",
+  "installsAfter": ["ghcr.io/devcontainers/features/common-utils"],
+  "options": {
+    "user": {
+      "type": "string",
+      "description": "The user to set git config for",
+      "default": "vscode"
+    }
+  }
+}

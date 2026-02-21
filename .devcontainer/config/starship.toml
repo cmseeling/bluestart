@@ -1,0 +1,48 @@
+add_newline = false
+
+format = """
+$username \
+$character \
+$directory \
+($git_branch \
+$git_status[\\) ](cyan))\
+\\$ """
+
+[username]
+format = "[$user](bold green)"
+show_always = true
+
+# Arrow that changes color on success/failure
+[character]
+success_symbol = "[➜](bold white)"
+error_symbol = "[➜](bold red)"
+vicmd_symbol = "➜"
+format = "$symbol"
+
+[directory]
+style = "bold blue"
+truncation_length = 3
+truncation_symbol = "…/"
+truncate_to_repo = false
+before_repo_root_style = "white"
+format = "[$path]($style)"
+
+[git_branch]
+symbol = "\ue725"
+format = '[$symbol]($style)[\(](cyan)[$branch(:$remote_branch)]($style)'
+style = 'bold red'
+
+[git_commit]
+style = 'blue'
+
+[git_status]
+staged = "[\uf046](bold green)"
+modified = "[\uf044](bold red)"
+untracked = "[+](bold yellow)"
+format = '([\[$modified$staged$untracked\]]($style))'
+style = 'bold red'
+
+[time]
+disabled = false
+time_format = "%D %r"
+format = '[$time ](blue)[➜ ](palette2)'

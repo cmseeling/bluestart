@@ -1,0 +1,55 @@
+{
+  "build": {
+    "dockerfile": "./Dockerfile",
+    "context": "."
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": "false",
+      "installOhMyZsh": "false",
+      "username": "vscode",
+      "userUid": "1000",
+      "userGid": "1000",
+      "upgradePackages": "true"
+    },
+    "./local-features/config": {
+      "user": "vscode"
+    },
+    "./local-features/delta": {
+      "user": "vscode"
+    },
+    "./local-features/fix-permissions": {
+      "user": "vscode"
+    }
+  },
+  "overrideFeatureInstallOrder": [
+    "ghcr.io/devcontainers/features/common-utils:2",
+    "./local-features/config",
+    "./local-features/delta",
+    "./local-features/fix-permissions"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "naumovs.color-highlight",
+        "svelte.svelte-vscode",
+        "thang-nm.flow-icons"
+      ]
+    }
+  },
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  "forwardPorts": [
+    5173
+  ],
+  // Use 'postCreateCommand' to run commands after the container is created.
+  // "postCreateCommand": "uname -a",
+  // Replace when using a ptrace-based debugger like C++, Go, and Rust
+  // "runArgs": [ "--init", "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
+  "runArgs": [
+    "--network=host"
+  ],
+  // Set `remoteUser` to `root` to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+  "remoteUser": "vscode",
+  "workspaceMount": "source=${localWorkspaceFolder}/,target=/workspace/bluestart,type=bind,consistency=cached,Z",
+  "workspaceFolder": "/workspace/bluestart"
+}

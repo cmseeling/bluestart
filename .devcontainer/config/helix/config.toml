@@ -1,0 +1,27 @@
+theme = "cyberdream"
+
+[editor]
+line-number = "relative"
+cursorline = true
+color-modes = true
+rulers = [120]
+end-of-line-diagnostics = "hint"
+
+[editor.inline-diagnostics]
+cursor-line = "error" # Show inline diagnostics when the cursor is on the line
+other-lines = "disable" # Don't expand diagnostics unless the cursor is on the line
+
+[editor.statusline]
+left = ["mode", "spinner", "version-control", "file-name"]
+
+[editor.cursor-shape]
+select = "underline"
+
+[editor.indent-guides]
+render = true
+
+[keys.normal]
+X = "select_line_above"
+
+[keys.select]
+X = "select_line_above"

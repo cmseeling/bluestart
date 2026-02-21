@@ -1,0 +1,12 @@
+{
+  "id": "custom-configs",
+  "name": "Place custom dotfiles",
+  "installsAfter": ["ghcr.io/devcontainers/features/common-utils"],
+  "options": {
+    "user": {
+      "type": "string",
+      "description": "The user to place custom dotfiles for",
+      "default": "vscode"
+    }
+  }
+}
